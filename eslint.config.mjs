@@ -1,7 +1,7 @@
-import js from "@eslint/js";
+//import js from "@eslint/js";
 import globals from "globals";
 import pluginJs from '@eslint/js';
-import { defineConfig } from "eslint/config";
+//import { defineConfig } from "eslint/config";
 
 export default [
   { files: ['**/*.js'], languageOptions: { sourceType: 'commonjs' } },
