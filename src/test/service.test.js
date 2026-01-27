@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../service');
+const app = require('../service.js');
 
 const { Role, DB } = require('../database/database.js');
 
@@ -23,6 +23,7 @@ beforeAll(async () => {
   testUser.email = Math.random().toString(36).substring(2, 12) + '@test.com';
   const registerRes = await request(app).post('/api/auth').send(testUser);
   testUserAuthToken = registerRes.body.token;
+  expect(registerRes.body.token).toBe(testUserAuthToken);
 });
 
 
@@ -34,4 +35,6 @@ test('login', async () => {
   const user = { ...testUser, roles: [{ role: 'diner' }] };
   delete user.password; 
   expect(loginRes.body.user).toMatchObject(user);
+
+  createAdminUser();
 });
