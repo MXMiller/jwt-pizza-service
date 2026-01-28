@@ -26,7 +26,27 @@ beforeAll(async () => {
   expect(registerRes.body.token).toBe(testUserAuthToken);
 });
 
-describe('login tests', () => {
+describe('endpointHelper.js tests', () => {
+  
+});
+
+describe('service.js tests', () => {
+  
+});
+
+describe('database.js tests', () => {
+  
+});
+
+describe('dbModel.js tests', () => {
+  
+});
+
+describe('model.js tests', () => {
+  
+});
+
+describe('authRouter.js tests', () => {
   test('login', async () => {
     const loginRes = await request(app).put('/api/auth').send(testUser);
     expect(loginRes.status).toBe(200);
@@ -36,6 +56,18 @@ describe('login tests', () => {
     delete user.password; 
     expect(loginRes.body.user).toMatchObject(user);
 
-    createAdminUser();
+    createAdminUser();//just here to make lint shutup
   });
+});
+
+describe('franchiseRouter.js tests', () => {
+  
+});
+
+describe('orderRouter.js tests', () => {
+  
+});
+
+describe('userRouter.js tests', () => {
+  
 });
