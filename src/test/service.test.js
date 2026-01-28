@@ -1,5 +1,14 @@
 const request = require('supertest');
 const app = require('../service.js');
+const endpointHelper = require('../endpointHelper.js');
+const service = require('../service.js');
+const database = require('../database/database.js');
+const dbModel = require('../database/dbModel.js');
+const authRouter = require('../routes/authRouter.js');
+const franchiseRouter = require('../routes/franchiseRouter.js');
+const userRouter = require('../routes/userRouter.js');
+const orderRouter = require('../routes/orderRouter.js');
+
 
 const { Role, DB } = require('../database/database.js');
 
@@ -27,7 +36,30 @@ beforeAll(async () => {
 });
 
 describe('endpointHelper.js tests', () => {
-  
+  test("error code constructor works", () => {
+    const err_message = "test error message";
+    const err_status = 418;
+    const statusErr = new endpointHelper.StatusCodeError(err_message, err_status);
+    expect(statusErr.message).toBe(err_message);
+    expect(statusErr.statusCode).toBe(err_status);
+  });
+
+  test('asyncHandler doesnt propagate accepted promise to next', async () => {
+    const fn = async () => Promise.resolve(1);
+    const wrapped = endpointHelper.asyncHandler(fn);
+    const next = jest.fn();
+    await wrapped({}, {}, next);
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  test('asyncHandler propagates rejected promise to next', async () => {
+    const err = new Error('fail async');
+    const fn = async () => Promise.reject(err);
+    const wrapped = endpointHelper.asyncHandler(fn);
+    const next = jest.fn();
+    await wrapped({}, {}, next);
+    expect(next).toHaveBeenCalledWith(err);
+  });
 });
 
 describe('service.js tests', () => {
