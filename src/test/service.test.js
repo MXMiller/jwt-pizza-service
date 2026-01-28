@@ -3,9 +3,8 @@ const app = require('../service.js');
 
 const { Role, DB } = require('../database/database.js');
 
-function randomName() {
-  return Math.random().toString(36).substring(2, 12);
-}
+const testUser = { name: 'pizza diner', email: 'reg@test.com', password: 'a' };
+let testUserAuthToken = 0;
 
 async function createAdminUser() {
   let user = { password: 'toomanysecrets', roles: [{ role: Role.Admin }] };
@@ -16,8 +15,9 @@ async function createAdminUser() {
   return { ...user, password: 'toomanysecrets' };
 }
 
-const testUser = { name: 'pizza diner', email: 'reg@test.com', password: 'a' };
-let testUserAuthToken;
+function randomName() {
+  return Math.random().toString(36).substring(2, 12);
+}
 
 beforeAll(async () => {
   testUser.email = Math.random().toString(36).substring(2, 12) + '@test.com';
@@ -26,15 +26,16 @@ beforeAll(async () => {
   expect(registerRes.body.token).toBe(testUserAuthToken);
 });
 
+describe('login tests', () => {
+  test('login', async () => {
+    const loginRes = await request(app).put('/api/auth').send(testUser);
+    expect(loginRes.status).toBe(200);
+    expect(loginRes.body.token).toMatch(/^[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*$/);
 
-test('login', async () => {
-  const loginRes = await request(app).put('/api/auth').send(testUser);
-  expect(loginRes.status).toBe(200);
-  expect(loginRes.body.token).toMatch(/^[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*$/);
+    const user = { ...testUser, roles: [{ role: 'diner' }] };
+    delete user.password; 
+    expect(loginRes.body.user).toMatchObject(user);
 
-  const user = { ...testUser, roles: [{ role: 'diner' }] };
-  delete user.password; 
-  expect(loginRes.body.user).toMatchObject(user);
-
-  createAdminUser();
+    createAdminUser();
+  });
 });
