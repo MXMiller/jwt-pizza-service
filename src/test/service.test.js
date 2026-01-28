@@ -8,8 +8,6 @@ const authRouter = require('../routes/authRouter.js');
 const franchiseRouter = require('../routes/franchiseRouter.js');
 const userRouter = require('../routes/userRouter.js');
 const orderRouter = require('../routes/orderRouter.js');
-
-
 const { Role, DB } = require('../database/database.js');
 
 const testUser = { name: 'pizza diner', email: 'reg@test.com', password: 'a' };
@@ -63,7 +61,32 @@ describe('endpointHelper.js tests', () => {
 });
 
 describe('service.js tests', () => {
-  
+  /*test('apiRouter get /docs returns version, endpoints, and config', async () => {
+    const res = await request(app).get('/docs');
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('version');
+    expect(res.body).toHaveProperty('endpoints');
+    expect(res.body).toHaveProperty('config');
+  });*/
+
+  test('get / returns welcome message and version', async () => {
+    const res = await request(app).get('/');
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('message', 'welcome to JWT Pizza');
+    expect(res.body).toHaveProperty('version');
+  });
+
+  test('get/unknownendpoint returns unknown enpoint', async () => {
+    const res = await request(app).get('/unknownendpoint');
+    expect(res.status).toBe(404);
+    expect(res.body).toHaveProperty('message', 'unknown endpoint');
+  });
+
+  /*test('error handler handles errors', async () => {
+    const err = new Error('test error handler');
+    err.statusCode = 500;
+    //how do i made this throw and error?
+  });*/
 });
 
 describe('database.js tests', () => {
