@@ -1,4 +1,3 @@
-
 describe('database.js tests', () => {
   jest.mock('../database/database.js', () => {
     const Role = { Diner: 'diner', Franchisee: 'franchisee', Admin: 'admin' };

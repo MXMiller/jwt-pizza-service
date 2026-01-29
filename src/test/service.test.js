@@ -2,7 +2,7 @@ const request = require('supertest');
 const app = require('../service.js');
 const endpointHelper = require('../endpointHelper.js');
 const service = require('../service.js');
-const {database, Role, DB, getID} = require('../database/database.js');
+const {database, Role, DB} = require('../database/database.js');
 const dbModel = require('../database/dbModel.js');
 const authRouter = require('../routes/authRouter.js');
 const franchiseRouter = require('../routes/franchiseRouter.js');
@@ -20,8 +20,6 @@ async function createAdminUser() {
   user = await DB.addUser(user);
   return { ...user, password: 'toomanysecrets' };
 }
-
-createAdminUser();//just here to make lint shutup
 
 function randomName() {
   return Math.random().toString(36).substring(2, 12);
@@ -121,8 +119,7 @@ describe('authRouter.js tests', () => {
     expect(nullFieldsRegisterRes.status).toBe(400);
     expect(nullFieldsRegisterRes.body.message).toBe('name, email, and password are required');
 
-    const nullRegisterRes = await request(app).post('/api/auth').send({
-    });
+    const nullRegisterRes = await request(app).post('/api/auth').send({ });
     expect(nullRegisterRes.status).toBe(400);
     expect(nullRegisterRes.body.message).toBe('name, email, and password are required');
   });
@@ -153,7 +150,36 @@ describe('authRouter.js tests', () => {
 });
 
 describe('franchiseRouter.js tests', () => {
-  
+  test('get / gets franchise returns a franchise', async () => {
+    const res = await request(franchiseRouter).get('/').send({ user: createAdminUser(), query: { page: 1 , limit: 10, name: 'test franchise' } });
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('franchises');
+    expect(Array.isArray(res.body.franchises)).toBe(true);
+  });
+
+  /*test('get /:userId admin gets all their franchises', async () => {
+    
+  });
+
+  test('post / admins creates franchises', async () => {
+    
+  });
+    
+  test('post / non-admins cant create franchises', async () => {
+    
+  });
+
+  test('delete /:franchiseId franchise deletes the franchise with that id', async () => {
+    
+  });
+
+  test('post /:franchiseId/store creates a new store in the franchise', async () => {
+    
+  });
+
+  test('delete /:franchiseId/store deletes a store franchise from the franchise', async () => {
+    
+  });*/
 });
 
 describe('orderRouter.js tests', () => {

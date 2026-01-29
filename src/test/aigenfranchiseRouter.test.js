@@ -1,9 +1,11 @@
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
+const config = require('../config.js');
 
 describe('franchiseRouter routes and edge cases', () => {
   beforeEach(() => {
     jest.resetModules();
+    jest.clearAllMocks();
   });
 
   test('GET /api/franchise calls DB.getFranchises and returns result', async () => {
@@ -30,15 +32,13 @@ describe('franchiseRouter routes and edge cases', () => {
     const payload = { id: 5, roles: [{ role: Role.Diner }] };
 
     jest.doMock('../database/database.js', () => ({ Role, DB }));
-    jest.spyOn(jwt, 'verify').mockImplementation(() => payload);
 
     const app = require('../service.js');
-    const token = jwt.sign(payload, 'test-secret');
+    const token = jwt.sign(payload, config.jwtSecret);
 
     const res = await request(app).get('/api/franchise/5').set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject([{ id: 2, name: 'mine' }]);
-    jwt.verify.mockRestore();
   });
 
   test('GET /api/franchise/:userId returns [] when requester unauthorized', async () => {
@@ -50,15 +50,13 @@ describe('franchiseRouter routes and edge cases', () => {
     const payload = { id: 6, roles: [{ role: Role.Diner }] };
 
     jest.doMock('../database/database.js', () => ({ Role, DB }));
-    jest.spyOn(jwt, 'verify').mockImplementation(() => payload);
     const app = require('../service.js');
-    const token = jwt.sign(payload, 'test-secret');
+    const token = jwt.sign(payload, config.jwtSecret);
 
     const res = await request(app).get('/api/franchise/5').set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual([]);
     expect(DB.getUserFranchises).not.toHaveBeenCalled();
-    jwt.verify.mockRestore();
   });
 
   test('POST /api/franchise allowed for Admin and returns created franchise', async () => {
@@ -71,15 +69,13 @@ describe('franchiseRouter routes and edge cases', () => {
     };
 
     jest.doMock('../database/database.js', () => ({ Role, DB }));
-    jest.spyOn(jwt, 'verify').mockImplementation(() => adminPayload);
     const app = require('../service.js');
-    const token = jwt.sign(adminPayload, 'test-secret');
+    const token = jwt.sign(adminPayload, config.jwtSecret);
 
     const res = await request(app).post('/api/franchise').set('Authorization', `Bearer ${token}`).send(franchiseReq);
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(7);
     expect(DB.createFranchise).toHaveBeenCalledWith(franchiseReq);
-    jwt.verify.mockRestore();
   });
 
   test('POST /api/franchise forbidden for non-Admin', async () => {
@@ -88,13 +84,11 @@ describe('franchiseRouter routes and edge cases', () => {
     const DB = { isLoggedIn: jest.fn().mockResolvedValue(true) };
 
     jest.doMock('../database/database.js', () => ({ Role, DB }));
-    jest.spyOn(jwt, 'verify').mockImplementation(() => userPayload);
     const app = require('../service.js');
-    const token = jwt.sign(userPayload, 'test-secret');
+    const token = jwt.sign(userPayload, config.jwtSecret);
 
     const res = await request(app).post('/api/franchise').set('Authorization', `Bearer ${token}`).send({ name: 'x' });
     expect(res.status).toBe(403);
-    jwt.verify.mockRestore();
   });
 
   test('POST /api/franchise propagates DB create errors (404)', async () => {
@@ -108,14 +102,12 @@ describe('franchiseRouter routes and edge cases', () => {
     };
 
     jest.doMock('../database/database.js', () => ({ Role, DB }));
-    jest.spyOn(jwt, 'verify').mockImplementation(() => adminPayload);
     const app = require('../service.js');
-    const token = jwt.sign(adminPayload, 'test-secret');
+    const token = jwt.sign(adminPayload, config.jwtSecret);
 
     const res = await request(app).post('/api/franchise').set('Authorization', `Bearer ${token}`).send({ name: 'x', admins: [{ email: 'a@x' }] });
     expect(res.status).toBe(404);
     expect(res.body.message).toMatch(/unknown user/i);
-    jwt.verify.mockRestore();
   });
 
   test('DELETE /api/franchise/:franchiseId calls DB.deleteFranchise and returns message', async () => {
@@ -140,15 +132,13 @@ describe('franchiseRouter routes and edge cases', () => {
     };
 
     jest.doMock('../database/database.js', () => ({ Role, DB }));
-    jest.spyOn(jwt, 'verify').mockImplementation(() => payload);
     const app = require('../service.js');
-    const token = jwt.sign(payload, 'test-secret');
+    const token = jwt.sign(payload, config.jwtSecret);
 
     const res = await request(app).post('/api/franchise/1/store').set('Authorization', `Bearer ${token}`).send({ name: 'SLC' });
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({ id: 100, franchiseId: 1, name: 'SLC' });
     expect(DB.createStore).toHaveBeenCalledWith(1, { name: 'SLC' });
-    jwt.verify.mockRestore();
   });
 
   test('POST /api/franchise/:id/store forbidden when not admin nor franchise admin', async () => {
@@ -160,13 +150,11 @@ describe('franchiseRouter routes and edge cases', () => {
     };
 
     jest.doMock('../database/database.js', () => ({ Role, DB }));
-    jest.spyOn(jwt, 'verify').mockImplementation(() => payload);
     const app = require('../service.js');
-    const token = jwt.sign(payload, 'test-secret');
+    const token = jwt.sign(payload, config.jwtSecret);
 
     const res = await request(app).post('/api/franchise/1/store').set('Authorization', `Bearer ${token}`).send({ name: 'SLC' });
     expect(res.status).toBe(403);
-    jwt.verify.mockRestore();
   });
 
   test('DELETE /api/franchise/:franchiseId/store/:storeId allows franchise admin', async () => {
@@ -179,14 +167,12 @@ describe('franchiseRouter routes and edge cases', () => {
     };
 
     jest.doMock('../database/database.js', () => ({ Role, DB }));
-    jest.spyOn(jwt, 'verify').mockImplementation(() => payload);
     const app = require('../service.js');
-    const token = jwt.sign(payload, 'test-secret');
+    const token = jwt.sign(payload, config.jwtSecret);
 
     const res = await request(app).delete('/api/franchise/2/store/5').set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ message: 'store deleted' });
     expect(DB.deleteStore).toHaveBeenCalledWith(2, 5);
-    jwt.verify.mockRestore();
   });
 });
