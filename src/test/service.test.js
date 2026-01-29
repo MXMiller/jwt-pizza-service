@@ -2,7 +2,7 @@ const request = require('supertest');
 const app = require('../service.js');
 const endpointHelper = require('../endpointHelper.js');
 const service = require('../service.js');
-const {database, Role, DB} = require('../database/database.js');
+const {database, Role, DB, getID} = require('../database/database.js');
 const dbModel = require('../database/dbModel.js');
 const authRouter = require('../routes/authRouter.js');
 const franchiseRouter = require('../routes/franchiseRouter.js');
@@ -146,9 +146,10 @@ describe('database.js tests', () => {
     };
     jest.doMock('mysql2/promise', () => ({ createConnection: jest.fn().mockResolvedValue(fakeConnection) }));
 
-    await expect(DB.addMenuItem(null)).rejects.toThrow();
+    await expect(db.addMenuItem(null)).rejects.toThrow();
+
     const nullItem = {title: null, description: null, image: null, price: null};
-    await expect(db.addMenuItem(nullItem)).rejects.toThrow();;
+    await expect(db.addMenuItem(nullItem)).rejects.toThrow();
   });
 
   test('addMenuItem allitems have different id', async () => {
@@ -160,6 +161,93 @@ describe('database.js tests', () => {
     expect(addedItem.image).toBe(addedItem2.image);
     expect(addedItem.price).toBe(addedItem2.price);
     expect(addedItem.id).not.toBe(addedItem2.id);
+  });
+
+  test('addUser add diner user', async () => {
+    const newUser = { name: 'test diner user', email: 'testdineruser@test.test', password: 'password', roles: [{ role: Role.Diner }] };
+    const addedUser = await db.addUser(newUser);
+    expect(addedUser.name).toBe(newUser.name);
+    expect(addedUser.email).toBe(newUser.email);
+    expect(addedUser.roles[0].role).toBe(newUser.roles[0].role);
+    expect(addedUser).toHaveProperty('id');
+  });
+
+  //I feel like this app should do this:
+  /*test('addUser cant add users with the same email', async () => {
+    const newUser = { name: 'test user', email: 'testuser@test.test', password: 'password', roles: [{ role: Role.Diner }] };
+    const newUser2 = { name: 'test user', email: 'testuser@test.test', password: 'password', roles: [{ role: Role.Diner }] };
+    const addedUser = await db.addUser(newUser);
+    const addedUser2 = await db.addUser(newUser2);
+    expect(addedUser2).toBeNull();
+  });*/
+
+  test('getUser gets user', async () => {
+    const newUser = { name: 'get test user', email: 'gettestuser@test.test', password: 'getpassword', roles: [{ role: Role.Diner }] };
+    const addedUser = await db.addUser(newUser);
+    const gotUser = await db.getUser(addedUser.email, addedUser.password);
+    expect(gotUser.name).toBe(addedUser.name);
+    expect(gotUser.email).toBe(addedUser.email);
+    expect(gotUser.roles[0].role).toBe(addedUser.roles[0].role);
+    expect(gotUser).toHaveProperty('id');
+  });
+
+  test('getUser throws error when email doesnt exist', async () => {
+    await expect(db.getUser('dosntexist@test.test', 'password')).rejects.toThrow();  
+  });
+
+  test('getUser throws error with invalid password', async () => {
+    const newUser = { name: 'wrong password user', email: 'wrongpassword@test.test', password: 'password', roles: [{ role: Role.Diner }] };
+    const addedUser = await db.addUser(newUser);
+    await expect(db.getUser(addedUser.email, 'wrongpassword')).rejects.toThrow();
+  });
+
+  test('updateUser updates user info', async () => { //fix!
+    
+  });
+
+  test('loginUser', async () => {
+    
+  });
+
+  test('isLoggedIn', async () => {
+
+  });
+
+  test('logoutUser', async () => {
+
+  });
+
+  test('getOrders', async () => {
+    
+  });
+
+  test('addDinerOrder', async () => {
+    
+  });
+
+  test('createFranchise', async () => {
+    
+  });
+
+  test('deleteFranchise', async () => {
+
+  });
+
+  test('getFranchises', async () => {
+  });
+
+  test('getUserFranchises', async () => {
+
+  });
+
+  test('getFranchise', async () => {
+  });
+
+  test('createStore', async () => {
+
+  });
+
+  test('deleteStore', async () => {
   });
 });
 
