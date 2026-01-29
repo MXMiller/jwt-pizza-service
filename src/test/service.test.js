@@ -62,14 +62,6 @@ describe('endpointHelper.js tests', () => {
 });
 
 describe('service.js tests', () => {
-  /*test('apiRouter get /docs returns version, endpoints, and config', async () => {
-    const res = await request(app).get('/docs');
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty('version');
-    expect(res.body).toHaveProperty('endpoints');
-    expect(res.body).toHaveProperty('config');
-  });*/
-
   test('get / returns welcome message and version', async () => {
     const res = await request(app).get('/');
     expect(res.status).toBe(200);
@@ -82,12 +74,6 @@ describe('service.js tests', () => {
     expect(res.status).toBe(404);
     expect(res.body).toHaveProperty('message', 'unknown endpoint');
   });
-
-  /*test('error handler handles errors', async () => {
-    const err = new Error('test error handler');
-    err.statusCode = 500;
-    //how do i made this throw and error?
-  });*/
 });
 
 describe('authRouter.js tests', () => {
