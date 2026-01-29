@@ -251,14 +251,6 @@ describe('database.js tests', () => {
   });
 });
 
-describe('dbModel.js tests', () => {
-  
-});
-
-describe('model.js tests', () => {
-  
-});
-
 describe('authRouter.js tests', () => {
   test('login', async () => {
     const loginRes = await request(app).put('/api/auth').send(testUser);
