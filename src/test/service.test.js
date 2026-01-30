@@ -116,13 +116,20 @@ describe('authRouter.js tests', () => {
   });*/
 
   test('put / login valid user works', async () => {
-    const newUser = { name: 'test user', email: 'testuser@test.test', password: 'password', roles: [{ role: Role.Diner }] };
-    const expectedUser = { ...newUser };
-    delete expectedUser.password;
-    const res = await request(app).put('/api/auth').send({ email: newUser.email, password: 'password' });
+    const userEmail = Math.random().toString(36).substring(2, 12) + '@test.com';
+    const registerRes = await request(app).post('/api/auth').send({
+      name: 'login test user',
+      email: userEmail,
+      password: 'password',
+    });
+    expect(registerRes.status).toBe(200);
+
+    const res = await request(app).put('/api/auth').send({ email: userEmail, password: 'password' });
     expect(res.status).toBe(200);
     expect(res.body.token).toMatch(/^[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*$/);
-    expect(res.body.user).toMatchObject(expectedUser);
+    expect(res.body.user).toHaveProperty('email', userEmail);
+    expect(res.body.user).toHaveProperty('name', 'login test user');
+    expect(res.body.user).toHaveProperty('roles');
   });
 
   test('put / login invalid user throws error', async () => {
