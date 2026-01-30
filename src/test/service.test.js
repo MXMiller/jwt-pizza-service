@@ -112,6 +112,15 @@ describe('authRouter.js tests', () => {
     expect(nullRegisterRes.body.message).toBe('name, email, and password are required');
   });
 
+  //I feel like this app should do this:
+  /*test('addUser cant add users with the same email', async () => {
+    const newUser = { name: 'test user', email: 'testuser@test.test', password: 'password', roles: [{ role: Role.Diner }] };
+    const newUser2 = { name: 'test user', email: 'testuser@test.test', password: 'password', roles: [{ role: Role.Diner }] };
+    const addedUser = await db.addUser(newUser);
+    const addedUser2 = await db.addUser(newUser2);
+    expect(addedUser2).toBeNull();
+  });*/
+
   test('login valid user works', async () => {
     const newUser = { name: 'test user', email: 'testuser@test.test', password: 'password', roles: [{ role: Role.Diner }] };
     const expectedUser = { ...newUser };
@@ -138,70 +147,84 @@ describe('authRouter.js tests', () => {
 });
 
 describe('franchiseRouter.js tests', () => {
+
   beforeEach(() => {
       jest.resetModules();
       jest.clearAllMocks();
     });
+
+  test('get / gets franchise returns a franchise', async () => {
+    const adminUser = await createAdminUser();
+    const token = jwt.sign({ id: adminUser.id, roles: [{ role: Role.Admin }] }, config.jwtSecret);
+    
+    const res = await request(app)
+      .get('/api/franchise')
+      .set('Authorization', `Bearer ${token}`)
+      .query({ page: 1, limit: 10, name: 'test franchise' });
+      
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('franchises');
+    expect(Array.isArray(res.body.franchises)).toBe(true);
+  });
   
-    test('GET /api/franchise calls DB.getFranchises and returns result', async () => {
-      const Role = { Admin: 'admin', Diner: 'diner', Franchisee: 'franchisee' };
-      const DB = {
-        getFranchises: jest.fn().mockResolvedValue([[{ id: 1, name: 'f1' }], true]),
-      };
+  test('GET /api/franchise calls DB.getFranchises and returns result', async () => {
+    const Role = { Admin: 'admin', Diner: 'diner', Franchisee: 'franchisee' };
+    const DB = {
+      getFranchises: jest.fn().mockResolvedValue([[{ id: 1, name: 'f1' }], true]),
+    };
   
-      jest.doMock('../database/database.js', () => ({ Role, DB }));
-      const app = require('../service.js');
+    jest.doMock('../database/database.js', () => ({ Role, DB }));
+    const app = require('../service.js');
   
-      const res = await request(app).get('/api/franchise?page=1&limit=5&name=abc');
-      expect(res.status).toBe(200);
-      expect(res.body.franchises).toBeDefined();
-      expect(DB.getFranchises).toHaveBeenCalledWith(undefined, '1', '5', 'abc');
-    });
+    const res = await request(app).get('/api/franchise?page=1&limit=5&name=abc');
+    expect(res.status).toBe(200);
+    expect(res.body.franchises).toBeDefined();
+    expect(DB.getFranchises).toHaveBeenCalledWith(undefined, '1', '5', 'abc');
+  });
   
-    test('GET /api/franchise/:userId returns user franchises when requester is same user', async () => {
-      const Role = { Admin: 'admin', Diner: 'diner' };
-      const DB = {
-        isLoggedIn: jest.fn().mockResolvedValue(true),
-        getUserFranchises: jest.fn().mockResolvedValue([{ id: 2, name: 'mine' }]),
-      };
-      const payload = { id: 5, roles: [{ role: Role.Diner }] };
+  test('GET /api/franchise/:userId returns user franchises when requester is same user', async () => {
+    const Role = { Admin: 'admin', Diner: 'diner' };
+    const DB = {
+      isLoggedIn: jest.fn().mockResolvedValue(true),
+      getUserFranchises: jest.fn().mockResolvedValue([{ id: 2, name: 'mine' }]),
+    };
+    const payload = { id: 5, roles: [{ role: Role.Diner }] };
   
-      jest.doMock('../database/database.js', () => ({ Role, DB }));
+    jest.doMock('../database/database.js', () => ({ Role, DB }));
   
-      const app = require('../service.js');
-      const token = jwt.sign(payload, config.jwtSecret);
+    const app = require('../service.js');
+    const token = jwt.sign(payload, config.jwtSecret);
   
-      const res = await request(app).get('/api/franchise/5').set('Authorization', `Bearer ${token}`);
-      expect(res.status).toBe(200);
-      expect(res.body).toMatchObject([{ id: 2, name: 'mine' }]);
-    });
+    const res = await request(app).get('/api/franchise/5').set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject([{ id: 2, name: 'mine' }]);
+  });
   
-    test('GET /api/franchise/:userId returns [] when requester unauthorized', async () => {
-      const Role = { Admin: 'admin', Diner: 'diner' };
-      const DB = {
-        isLoggedIn: jest.fn().mockResolvedValue(true),
-        getUserFranchises: jest.fn().mockResolvedValue([{ id: 3, name: 'other' }]),
-      };
-      const payload = { id: 6, roles: [{ role: Role.Diner }] };
+  test('GET /api/franchise/:userId returns [] when requester unauthorized', async () => {
+    const Role = { Admin: 'admin', Diner: 'diner' };
+    const DB = {
+      isLoggedIn: jest.fn().mockResolvedValue(true),
+      getUserFranchises: jest.fn().mockResolvedValue([{ id: 3, name: 'other' }]),
+    };
+    const payload = { id: 6, roles: [{ role: Role.Diner }] };
   
-      jest.doMock('../database/database.js', () => ({ Role, DB }));
-      const app = require('../service.js');
-      const token = jwt.sign(payload, config.jwtSecret);
+    jest.doMock('../database/database.js', () => ({ Role, DB }));
+    const app = require('../service.js');
+    const token = jwt.sign(payload, config.jwtSecret);
   
-      const res = await request(app).get('/api/franchise/5').set('Authorization', `Bearer ${token}`);
-      expect(res.status).toBe(200);
-      expect(res.body).toEqual([]);
-      expect(DB.getUserFranchises).not.toHaveBeenCalled();
-    });
+    const res = await request(app).get('/api/franchise/5').set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual([]);
+    expect(DB.getUserFranchises).not.toHaveBeenCalled();
+  });
   
-    test('POST /api/franchise allowed for Admin and returns created franchise', async () => {
-      const Role = { Admin: 'admin' };
-      const adminPayload = { id: 1, roles: [{ role: Role.Admin }] };
-      const franchiseReq = { name: 'newF', admins: [{ email: 'a@x' }] };
-      const DB = {
-        isLoggedIn: jest.fn().mockResolvedValue(true),
-        createFranchise: jest.fn().mockResolvedValue({ ...franchiseReq, id: 7, admins: [{ email: 'a@x', id: 4, name: 'n' }] }),
-      };
+  test('POST /api/franchise allowed for Admin and returns created franchise', async () => {
+    const Role = { Admin: 'admin' };
+    const adminPayload = { id: 1, roles: [{ role: Role.Admin }] };
+    const franchiseReq = { name: 'newF', admins: [{ email: 'a@x' }] };
+    const DB = {
+      isLoggedIn: jest.fn().mockResolvedValue(true),
+      createFranchise: jest.fn().mockResolvedValue({ ...franchiseReq, id: 7, admins: [{ email: 'a@x', id: 4, name: 'n' }] }),     };
   
       jest.doMock('../database/database.js', () => ({ Role, DB }));
       const app = require('../service.js');
@@ -209,107 +232,107 @@ describe('franchiseRouter.js tests', () => {
   
       const res = await request(app).post('/api/franchise').set('Authorization', `Bearer ${token}`).send(franchiseReq);
       expect(res.status).toBe(200);
-      expect(res.body.id).toBe(7);
-      expect(DB.createFranchise).toHaveBeenCalledWith(franchiseReq);
-    });
+    expect(res.body.id).toBe(7);
+    expect(DB.createFranchise).toHaveBeenCalledWith(franchiseReq);
+  });
+
+  test('POST /api/franchise forbidden for non-Admin', async () => {
+    const Role = { Admin: 'admin', Diner: 'diner' };
+    const userPayload = { id: 2, roles: [{ role: Role.Diner }] };
+    const DB = { isLoggedIn: jest.fn().mockResolvedValue(true) };
+
+    jest.doMock('../database/database.js', () => ({ Role, DB }));
+    const app = require('../service.js');
+    const token = jwt.sign(userPayload, config.jwtSecret);
+
+    const res = await request(app).post('/api/franchise').set('Authorization', `Bearer ${token}`).send({ name: 'x' });
+    expect(res.status).toBe(403);
+  });
+
+  test('POST /api/franchise propagates DB create errors (404)', async () => {
+    const Role = { Admin: 'admin' };
+    const adminPayload = { id: 1, roles: [{ role: Role.Admin }] };
+    const err = new Error('unknown user for franchise admin a@x provided');
+    err.statusCode = 404;
+    const DB = {
+      isLoggedIn: jest.fn().mockResolvedValue(true),
+      createFranchise: jest.fn().mockRejectedValue(err),
+    };
+
+    jest.doMock('../database/database.js', () => ({ Role, DB }));
+    const app = require('../service.js');
+    const token = jwt.sign(adminPayload, config.jwtSecret);
+
+    const res = await request(app).post('/api/franchise').set('Authorization', `Bearer ${token}`).send({ name: 'x', admins: [{ email: 'a@x' }] });
+    expect(res.status).toBe(404);
+    expect(res.body.message).toMatch(/unknown user/i);
+  });
   
-    test('POST /api/franchise forbidden for non-Admin', async () => {
-      const Role = { Admin: 'admin', Diner: 'diner' };
-      const userPayload = { id: 2, roles: [{ role: Role.Diner }] };
-      const DB = { isLoggedIn: jest.fn().mockResolvedValue(true) };
+  test('DELETE /api/franchise/:franchiseId calls DB.deleteFranchise and returns message', async () => {
+    const Role = { Admin: 'admin' };
+    const DB = { deleteFranchise: jest.fn().mockResolvedValue() };
+    jest.doMock('../database/database.js', () => ({ Role, DB }));
+    const app = require('../service.js');
   
-      jest.doMock('../database/database.js', () => ({ Role, DB }));
-      const app = require('../service.js');
-      const token = jwt.sign(userPayload, config.jwtSecret);
+    const res = await request(app).delete('/api/franchise/123');
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ message: 'franchise deleted' });
+    expect(DB.deleteFranchise).toHaveBeenCalledWith(123);
+  });
   
-      const res = await request(app).post('/api/franchise').set('Authorization', `Bearer ${token}`).send({ name: 'x' });
-      expect(res.status).toBe(403);
-    });
+  test('POST /api/franchise/:id/store allows franchise admin to create store', async () => {
+    const Role = { Admin: 'admin', Diner: 'diner' };
+    const payload = { id: 10, roles: [{ role: Role.Diner }] };
+    const DB = {
+      isLoggedIn: jest.fn().mockResolvedValue(true),
+      getFranchise: jest.fn().mockResolvedValue({ id: 1, admins: [{ id: 10 }] }),
+      createStore: jest.fn().mockResolvedValue({ id: 100, franchiseId: 1, name: 'SLC' }),
+    };
   
-    test('POST /api/franchise propagates DB create errors (404)', async () => {
-      const Role = { Admin: 'admin' };
-      const adminPayload = { id: 1, roles: [{ role: Role.Admin }] };
-      const err = new Error('unknown user for franchise admin a@x provided');
-      err.statusCode = 404;
-      const DB = {
-        isLoggedIn: jest.fn().mockResolvedValue(true),
-        createFranchise: jest.fn().mockRejectedValue(err),
-      };
+    jest.doMock('../database/database.js', () => ({ Role, DB }));
+    const app = require('../service.js');
+    const token = jwt.sign(payload, config.jwtSecret);
   
-      jest.doMock('../database/database.js', () => ({ Role, DB }));
-      const app = require('../service.js');
-      const token = jwt.sign(adminPayload, config.jwtSecret);
+    const res = await request(app).post('/api/franchise/1/store').set('Authorization', `Bearer ${token}`).send({ name: 'SLC' });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ id: 100, franchiseId: 1, name: 'SLC' });
+    expect(DB.createStore).toHaveBeenCalledWith(1, { name: 'SLC' });
+  });
   
-      const res = await request(app).post('/api/franchise').set('Authorization', `Bearer ${token}`).send({ name: 'x', admins: [{ email: 'a@x' }] });
-      expect(res.status).toBe(404);
-      expect(res.body.message).toMatch(/unknown user/i);
-    });
+  test('POST /api/franchise/:id/store forbidden when not admin nor franchise admin', async () => {
+    const Role = { Admin: 'admin', Diner: 'diner' };
+    const payload = { id: 11, roles: [{ role: Role.Diner }] };
+    const DB = {
+      isLoggedIn: jest.fn().mockResolvedValue(true),
+      getFranchise: jest.fn().mockResolvedValue({ id: 1, admins: [{ id: 9 }] }),
+    };
   
-    test('DELETE /api/franchise/:franchiseId calls DB.deleteFranchise and returns message', async () => {
-      const Role = { Admin: 'admin' };
-      const DB = { deleteFranchise: jest.fn().mockResolvedValue() };
-      jest.doMock('../database/database.js', () => ({ Role, DB }));
-      const app = require('../service.js');
+    jest.doMock('../database/database.js', () => ({ Role, DB }));
+    const app = require('../service.js');
+    const token = jwt.sign(payload, config.jwtSecret);
   
-      const res = await request(app).delete('/api/franchise/123');
-      expect(res.status).toBe(200);
-      expect(res.body).toEqual({ message: 'franchise deleted' });
-      expect(DB.deleteFranchise).toHaveBeenCalledWith(123);
-    });
+    const res = await request(app).post('/api/franchise/1/store').set('Authorization', `Bearer ${token}`).send({ name: 'SLC' });
+    expect(res.status).toBe(403);
+  });
   
-    test('POST /api/franchise/:id/store allows franchise admin to create store', async () => {
-      const Role = { Admin: 'admin', Diner: 'diner' };
-      const payload = { id: 10, roles: [{ role: Role.Diner }] };
-      const DB = {
-        isLoggedIn: jest.fn().mockResolvedValue(true),
-        getFranchise: jest.fn().mockResolvedValue({ id: 1, admins: [{ id: 10 }] }),
-        createStore: jest.fn().mockResolvedValue({ id: 100, franchiseId: 1, name: 'SLC' }),
-      };
+  test('DELETE /api/franchise/:franchiseId/store/:storeId allows franchise admin', async () => {
+    const Role = { Admin: 'admin', Diner: 'diner' };
+    const payload = { id: 20, roles: [{ role: Role.Diner }] };
+    const DB = {
+      isLoggedIn: jest.fn().mockResolvedValue(true),
+      getFranchise: jest.fn().mockResolvedValue({ id: 2, admins: [{ id: 20 }] }),
+      deleteStore: jest.fn().mockResolvedValue(),
+    };
   
-      jest.doMock('../database/database.js', () => ({ Role, DB }));
-      const app = require('../service.js');
-      const token = jwt.sign(payload, config.jwtSecret);
-  
-      const res = await request(app).post('/api/franchise/1/store').set('Authorization', `Bearer ${token}`).send({ name: 'SLC' });
-      expect(res.status).toBe(200);
-      expect(res.body).toMatchObject({ id: 100, franchiseId: 1, name: 'SLC' });
-      expect(DB.createStore).toHaveBeenCalledWith(1, { name: 'SLC' });
-    });
-  
-    test('POST /api/franchise/:id/store forbidden when not admin nor franchise admin', async () => {
-      const Role = { Admin: 'admin', Diner: 'diner' };
-      const payload = { id: 11, roles: [{ role: Role.Diner }] };
-      const DB = {
-        isLoggedIn: jest.fn().mockResolvedValue(true),
-        getFranchise: jest.fn().mockResolvedValue({ id: 1, admins: [{ id: 9 }] }),
-      };
-  
-      jest.doMock('../database/database.js', () => ({ Role, DB }));
-      const app = require('../service.js');
-      const token = jwt.sign(payload, config.jwtSecret);
-  
-      const res = await request(app).post('/api/franchise/1/store').set('Authorization', `Bearer ${token}`).send({ name: 'SLC' });
-      expect(res.status).toBe(403);
-    });
-  
-    test('DELETE /api/franchise/:franchiseId/store/:storeId allows franchise admin', async () => {
-      const Role = { Admin: 'admin', Diner: 'diner' };
-      const payload = { id: 20, roles: [{ role: Role.Diner }] };
-      const DB = {
-        isLoggedIn: jest.fn().mockResolvedValue(true),
-        getFranchise: jest.fn().mockResolvedValue({ id: 2, admins: [{ id: 20 }] }),
-        deleteStore: jest.fn().mockResolvedValue(),
-      };
-  
-      jest.doMock('../database/database.js', () => ({ Role, DB }));
-      const app = require('../service.js');
-      const token = jwt.sign(payload, config.jwtSecret);
-  
-      const res = await request(app).delete('/api/franchise/2/store/5').set('Authorization', `Bearer ${token}`);
-      expect(res.status).toBe(200);
-      expect(res.body).toEqual({ message: 'store deleted' });
-      expect(DB.deleteStore).toHaveBeenCalledWith(2, 5);
-    });
+    jest.doMock('../database/database.js', () => ({ Role, DB }));
+    const app = require('../service.js');
+    const token = jwt.sign(payload, config.jwtSecret);
+
+    const res = await request(app).delete('/api/franchise/2/store/5').set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ message: 'store deleted' });
+    expect(DB.deleteStore).toHaveBeenCalledWith(2, 5);
+  });
 });
 
 describe('orderRouter.js tests', () => {
