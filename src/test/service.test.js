@@ -721,7 +721,6 @@ describe('database.js tests', () => { //666 the database is evil lol
       password: 'testpass',
     });
     const token = registerRes.body.token;
-    const userId = registerRes.body.user.id;
 
     const isLoggedIn = await DB.isLoggedIn(token);
     expect(isLoggedIn).toBe(true);
@@ -917,6 +916,7 @@ describe('database.js tests', () => { //666 the database is evil lol
     const franchises = await DB.getFranchises(null, 0, 10, franchiseName);
     expect(Array.isArray(franchises[0])).toBe(true);
     expect(typeof franchises[1]).toBe('boolean');
+    expect(franchises[0].some((f) => f.id === franchise.id)).toBe(true);
   });
 
   test('getFranchises with wildcard filter', async () => {
