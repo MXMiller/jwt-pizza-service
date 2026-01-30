@@ -1,6 +1,5 @@
 const request = require('supertest');
 const app = require('../service.js');
-const { Role } = require('../database/database.js');
 
 describe('authRouter.js tests', () => {
   let testUserAuthToken = 0;
