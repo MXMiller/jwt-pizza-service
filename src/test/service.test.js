@@ -670,7 +670,7 @@ describe('userRouter.js tests', () => {
   });
 });
 
-describe('database.js tests', () => { //666 the database is evil lol
+describe('database.js tests', () => { 
   test('getMenu returns all menu items', async () => {
     const menu = await DB.getMenu();
     expect(Array.isArray(menu)).toBe(true);
