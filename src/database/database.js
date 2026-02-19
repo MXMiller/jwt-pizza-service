@@ -161,7 +161,17 @@ class DB {
     }
   }
 
- 
+  async deleteUser(userId) {
+    const connection = await this.getConnection();
+    try {
+      await this.query(connection, `DELETE FROM auth WHERE userId=?`, [userId]);
+      let userName = await this.query(connection, `SELECT name FROM user WHERE userId=?`, [userId]);
+      await this.query(connection, `DELETE FROM user WHERE name=?`, [userName]);
+      await this.query(connection, `DELETE FROM userRole WHERE userId=?`, [userId]);
+    } finally {
+      connection.end();
+    }
+  }
 
   async getOrders(user, page = 1) {
     const connection = await this.getConnection();
