@@ -75,6 +75,37 @@ class DB {
     }
   }
 
+  async getUsers(authUser, page = 0, limit = 10, nameFilter = '*') {
+    const connection = await this.getConnection();
+
+    const offset = page * limit;
+    nameFilter = nameFilter.replace(/\*/g, '%');
+
+    try {
+      if (authUser?.isRole(Role.Admin)) {
+        let users = await this.query(connection, `SELECT * FROM user WHERE name LIKE ? LIMIT ${limit + 1} OFFSET ${offset}`, [nameFilter]);
+        let userIds = await this.query(connection, `SELECT id FROM user WHERE name LIKE ? LIMIT ${limit + 1} OFFSET ${offset}`, [nameFilter]);
+
+        const more = users.length > limit;
+        if (more) {
+          users = users.slice(0, limit);
+          userIds = userIds.slice(0, limit);
+        }
+
+        for (const user of users) {
+          let role = await this.query(connection, `SELECT role FROM userRole WHERE userId=?`, [user.id]);
+          user.roles = role;
+        }
+
+        return [users, more];
+      } else {
+        return [[], False];
+      }
+    } finally {
+      connection.end();
+    }
+  }
+
   async updateUser(userId, name, email, password) {
     const connection = await this.getConnection();
     try {
@@ -124,11 +155,13 @@ class DB {
     token = this.getTokenSignature(token);
     const connection = await this.getConnection();
     try {
-      await this.query(connection, `DELETE FROM auth WHERE token=?`, [token]);
+      await this.query(connection, `DELETE FROM user WHERE userId=?`, [token]);
     } finally {
       connection.end();
     }
   }
+
+ 
 
   async getOrders(user, page = 1) {
     const connection = await this.getConnection();
@@ -224,6 +257,7 @@ class DB {
           franchise.stores = await this.query(connection, `SELECT id, name FROM store WHERE franchiseId=?`, [franchise.id]);
         }
       }
+
       return [franchises, more];
     } finally {
       connection.end();
