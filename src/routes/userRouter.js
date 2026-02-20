@@ -58,6 +58,16 @@ userRouter.get(
   })
 );
 
+// listUsers
+userRouter.get(
+  '/',
+  authRouter.authenticateToken,
+  asyncHandler(async (req, res) => {
+    const [users, more] = await DB.getUsers(req.user, req.query.page, req.query.limit, req.query.name);
+    res.json({ users, more });
+  })
+);
+
 // updateUser
 userRouter.put(
   '/:userId',
@@ -73,16 +83,6 @@ userRouter.put(
     const updatedUser = await DB.updateUser(userId, name, email, password);
     const auth = await setAuth(updatedUser);
     res.json({ user: updatedUser, token: auth });
-  })
-);
-
-// listUsers
-userRouter.get(
-  '/',
-  authRouter.authenticateToken,
-  asyncHandler(async (req, res) => {
-    const [users, more] = await DB.getUsers(req.user, req.query.page, req.query.limit, req.query.name);
-    res.json({ users, more });
   })
 );
 
