@@ -3,7 +3,7 @@ const app = require('../service.js');
 
 describe('userRouter.js tests', () => {
   test('GET /api/user/me returns authenticated user', async () => {
-    const userEmail = Math.random().toString(36).substring(2, 12) + '@test.com';
+    const userEmail = randomName() + '@test.com';
     const registerRes = await request(app).post('/api/auth').send({
       name: 'test user me',
       email: userEmail,
@@ -26,7 +26,7 @@ describe('userRouter.js tests', () => {
   });
 
   test('PUT /api/user/:userId allows user to update own profile', async () => {
-    const userEmail = Math.random().toString(36).substring(2, 12) + '@test.com';
+    const userEmail = randomName() + '@test.com';
     const registerRes = await request(app).post('/api/auth').send({
       name: 'original name',
       email: userEmail,
@@ -51,7 +51,7 @@ describe('userRouter.js tests', () => {
     
     async function createAdminUser() {
       let user = { password: 'toomanysecrets', roles: [{ role: Role.Admin }] };
-      user.name = Math.random().toString(36).substring(2, 12);
+      user.name = randomName();
       user.email = user.name + '@admin.com';
       user = await DB.addUser(user);
       return { ...user, password: 'toomanysecrets' };
@@ -61,7 +61,7 @@ describe('userRouter.js tests', () => {
     const adminAuthRes = await request(app).put('/api/auth').send({ email: adminUser.email, password: 'toomanysecrets' });
     const adminToken = adminAuthRes.body.token;
 
-    const userEmail = Math.random().toString(36).substring(2, 12) + '@test.com';
+    const userEmail = randomName() + '@test.com';
     const registerRes = await request(app).post('/api/auth').send({
       name: 'target user',
       email: userEmail,
@@ -79,7 +79,7 @@ describe('userRouter.js tests', () => {
   });
 
   test('PUT /api/user/:userId forbidden when user updates other users without admin role', async () => {
-    const userEmail1 = Math.random().toString(36).substring(2, 12) + '@test.com';
+    const userEmail1 = randomName() + '@test.com';
     const registerRes1 = await request(app).post('/api/auth').send({
       name: 'user1',
       email: userEmail1,
@@ -87,7 +87,7 @@ describe('userRouter.js tests', () => {
     });
     const token1 = registerRes1.body.token;
 
-    const userEmail2 = Math.random().toString(36).substring(2, 12) + '@test.com';
+    const userEmail2 = randomName() + '@test.com';
     const registerRes2 = await request(app).post('/api/auth').send({
       name: 'user2',
       email: userEmail2,
@@ -105,7 +105,7 @@ describe('userRouter.js tests', () => {
   });
 
   test('PUT /api/user/:userId updates email successfully', async () => {
-    const userEmail = Math.random().toString(36).substring(2, 12) + '@test.com';
+    const userEmail = randomName() + '@test.com';
     const registerRes = await request(app).post('/api/auth').send({
       name: 'email test user',
       email: userEmail,
@@ -114,7 +114,7 @@ describe('userRouter.js tests', () => {
     const token = registerRes.body.token;
     const userId = registerRes.body.user.id;
 
-    const newEmail = Math.random().toString(36).substring(2, 12) + '@updated.com';
+    const newEmail = randomName() + '@updated.com';
     const updateRes = await request(app)
       .put(`/api/user/${userId}`)
       .set('Authorization', `Bearer ${token}`)
@@ -125,7 +125,7 @@ describe('userRouter.js tests', () => {
   });
 
   test('PUT /api/user/:userId updates password successfully', async () => {
-    const userEmail = Math.random().toString(36).substring(2, 12) + '@test.com';
+    const userEmail = randomName() + '@test.com';
     const registerRes = await request(app).post('/api/auth').send({
       name: 'password test user',
       email: userEmail,
@@ -156,7 +156,7 @@ describe('userRouter.js tests', () => {
   });
 
   test('PUT /api/user/:userId with all fields provided', async () => {
-    const userEmail = Math.random().toString(36).substring(2, 12) + '@test.com';
+    const userEmail = randomName() + '@test.com';
     const registerRes = await request(app).post('/api/auth').send({
       name: 'all fields update user',
       email: userEmail,
@@ -173,50 +173,42 @@ describe('userRouter.js tests', () => {
     expect(updateRes.status).toBe(200);
   });
 
-  test('DELETE /api/user/:userId returns not implemented', async () => {
-    const userEmail = Math.random().toString(36).substring(2, 12) + '@test.com';
-    const registerRes = await request(app).post('/api/auth').send({
-      name: 'delete test user',
-      email: userEmail,
-      password: 'testpass',
-    });
-    const token = registerRes.body.token;
-    const userId = registerRes.body.user.id;
-
-    const res = await request(app)
-      .delete(`/api/user/${userId}`)
-      .set('Authorization', `Bearer ${token}`);
-
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty('message', 'not implemented');
-  });
-
   test('DELETE /api/user/:userId requires authentication', async () => {
     const res = await request(app).delete('/api/user/1');
     expect(res.status).toBe(401);
-  });
-
-  test('GET /api/user returns not implemented', async () => {
-    const userEmail = Math.random().toString(36).substring(2, 12) + '@test.com';
-    const registerRes = await request(app).post('/api/auth').send({
-      name: 'list user',
-      email: userEmail,
-      password: 'testpass',
-    });
-    const token = registerRes.body.token;
-
-    const res = await request(app)
-      .get('/api/user')
-      .set('Authorization', `Bearer ${token}`);
-
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty('message', 'not implemented');
-    expect(res.body).toHaveProperty('users', []);
-    expect(res.body).toHaveProperty('more', false);
   });
 
   test('GET /api/user requires authentication', async () => {
     const res = await request(app).get('/api/user');
     expect(res.status).toBe(401);
   });
+
+  test('list users unauthorized', async () => {
+    const listUsersRes = await request(app).get('/api/user');
+    expect(listUsersRes.status).toBe(401);
+  });
+
+  test('admin delete user', async () => {
+    const [user, userToken] = await registerUser(request(app));
+    const listUsersRes = await request(app)
+      .delete('/api/user/10')
+      .set('Authorization', 'Bearer ' + userToken);
+    expect(listUsersRes.status).toBe(200);
+  });
+
+  async function registerUser(service) {
+    const testUser = {
+      name: 'pizza diner',
+      email: `${randomName()}@test.com`,
+      password: 'a'
+    };
+    const registerRes = await service.post('/api/auth').send(testUser);
+    registerRes.body.user.password = testUser.password;
+
+    return [registerRes.body.user, registerRes.body.token];
+  }
+
+  function randomName() {
+    return Math.random().toString(36).substring(2, 12);
+  }
 });
