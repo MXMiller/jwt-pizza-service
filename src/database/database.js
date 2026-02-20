@@ -83,7 +83,7 @@ class DB {
 
     try {
       if (authUser?.isRole(Role.Admin)) {
-        let users = await this.query(connection, `SELECT * FROM user WHERE name LIKE ? LIMIT ${limit + 1} OFFSET ${offset}`, [nameFilter]);
+        let users = await this.query(connection, `SELECT id, name, email FROM user WHERE name LIKE ? LIMIT ${limit + 1} OFFSET ${offset}`, [nameFilter]);
         let userIds = await this.query(connection, `SELECT id FROM user WHERE name LIKE ? LIMIT ${limit + 1} OFFSET ${offset}`, [nameFilter]);
 
         const more = users.length > limit;
@@ -155,7 +155,7 @@ class DB {
     token = this.getTokenSignature(token);
     const connection = await this.getConnection();
     try {
-      await this.query(connection, `DELETE FROM user WHERE userId=?`, [token]);
+      await this.query(connection, `DELETE FROM auth WHERE token=?`, [token]);
     } finally {
       connection.end();
     }
@@ -164,10 +164,8 @@ class DB {
   async deleteUser(userId) {
     const connection = await this.getConnection();
     try {
-      await this.query(connection, `DELETE FROM auth WHERE userId=?`, [userId]);
-      let userName = await this.query(connection, `SELECT name FROM user WHERE userId=?`, [userId]);
-      await this.query(connection, `DELETE FROM user WHERE name=?`, [userName]);
       await this.query(connection, `DELETE FROM userRole WHERE userId=?`, [userId]);
+      await this.query(connection, `DELETE FROM user WHERE id=?`, [userId]);
     } finally {
       connection.end();
     }
