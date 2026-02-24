@@ -84,12 +84,10 @@ class DB {
     try {
       if (authUser?.isRole(Role.Admin)) {
         let users = await this.query(connection, `SELECT id, name, email FROM user WHERE name LIKE ? LIMIT ${limit + 1} OFFSET ${offset}`, [nameFilter]);
-        let userIds = await this.query(connection, `SELECT id FROM user WHERE name LIKE ? LIMIT ${limit + 1} OFFSET ${offset}`, [nameFilter]);
 
         const more = users.length > limit;
         if (more) {
           users = users.slice(0, limit);
-          userIds = userIds.slice(0, limit);
         }
 
         for (const user of users) {
@@ -99,7 +97,7 @@ class DB {
 
         return [users, more];
       } else {
-        return [[], False];
+        return [[], false];
       }
     } finally {
       connection.end();

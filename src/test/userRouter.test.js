@@ -188,6 +188,14 @@ describe('userRouter.js tests', () => {
     expect(listUsersRes.status).toBe(401);
   });
 
+  test('list users', async () => {
+    const [userToken] = await registerUser(request(app));
+    const listUsersRes = await request(app)
+      .get('/api/user')
+      .set('Authorization', 'Bearer ' + userToken);
+    expect(listUsersRes.status).toBe(200);
+  });
+
   test('admin delete user', async () => {
     const [user, userToken] = await registerUser(request(app));
     const listUsersRes = await request(app)
