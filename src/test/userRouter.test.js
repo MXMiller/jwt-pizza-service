@@ -1,6 +1,6 @@
 const request = require('supertest');
 const app = require('../service.js');
-const { Role } = require('../database/database.js');
+//const { Role } = require('../database/database.js');
 
 describe('userRouter.js tests', () => {
   test('GET /api/user/me returns authenticated user', async () => {
@@ -203,7 +203,7 @@ describe('userRouter.js tests', () => {
       .delete('/api/user/10')
       .set('Authorization', 'Bearer ' + userToken);
     expect(listUsersRes.status).toBe(200);
-  });*/
+  });
 
   async function registerUser(service) {
     const testUser = {
@@ -218,7 +218,7 @@ describe('userRouter.js tests', () => {
     registerRes.body.user.password = testUser.password;
 
     return [registerRes.body.user, registerRes.body.token];
-  }
+  }*/
 
   function randomName() {
     return Math.random().toString(36).substring(2, 12);
