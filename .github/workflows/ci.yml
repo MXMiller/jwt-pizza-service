@@ -1,5 +1,6 @@
 name: CI Pipeline
 # my domain: https://pizza-factory-mrm-franchise.click
+# my aws backend: https://pizza-service.pizza-factory-mrm-franchise.click
 on:
   push:
     branches:
