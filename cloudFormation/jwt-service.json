@@ -2,6 +2,11 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "JWT Pizza Service infrastructure",
   "Parameters": {
+    "DeploymentName": {
+      "Type": "String",
+      "Description": "name of JWT Pizza Service to create",
+      "Default": "jwt-pizza-service"
+    },
     "TaskVersion": {
       "Type": "String",
       "Description": "JWT Pizza Service Task Definition version to initialize the ECS service with",
@@ -34,7 +39,7 @@
     "ECSCluster": {
       "Type": "AWS::ECS::Cluster",
       "Properties": {
-        "ClusterName": "jwt-pizza-service"
+        "ClusterName": { "Ref": "DeploymentName " }
       }
     },
     "ECSService": {
@@ -48,12 +53,12 @@
             ["arn:aws:ecs", { "Ref": "AWS::Region" }, { "Ref": "AWS::AccountId" }, "task-definition/jwt-pizza-service", { "Ref": "TaskVersion" }]
           ]
         },
-        "ServiceName": "jwt-pizza-service",
+        "ServiceName": { "Ref": "DeploymentName " },
         "SchedulingStrategy": "REPLICA",
         "DesiredCount": 1,
         "LoadBalancers": [
           {
-            "ContainerName": "jwt-pizza-service",
+            "ContainerName": { "Ref": "DeploymentName " },
             "ContainerPort": 80,
             "LoadBalancerName": {
               "Ref": "AWS::NoValue"
@@ -98,7 +103,7 @@
       "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
       "Properties": {
         "Type": "application",
-        "Name": "jwt-pizza-service",
+        "Name": { "Ref": "DeploymentName " },
         "SecurityGroups": {
           "Ref": "SecurityGroupIDs"
         },
@@ -111,7 +116,7 @@
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
       "Properties": {
         "HealthCheckPath": "/",
-        "Name": "jwt-pizza-service",
+        "Name": { "Ref": "DeploymentName " },
         "Port": 80,
         "Protocol": "HTTP",
         "TargetType": "ip",
