@@ -85,7 +85,7 @@ orderRouter.post(
       body: JSON.stringify({ diner: { id: req.user.id, name: req.user.name, email: req.user.email }, order }),
     });
     console.log(req);
-    console.log(r.body);
+    console.log(r.json);
     const j = await r.json();
     if (r.ok) {
       res.send({ order, followLinkToEndChaos: j.reportUrl, jwt: j.jwt });
