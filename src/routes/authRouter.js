@@ -71,7 +71,8 @@ authRouter.post(
     const auth = await setAuth(user);
     res.json({ user: user, token: auth });
 
-
+    metrics.userRegistered(); 
+    metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -84,7 +85,7 @@ authRouter.put(
     const auth = await setAuth(user);
     res.json({ user: user, token: auth });
 
-    metrics.userLoggedIn();  
+    metrics.userLoggedIn(); 
     metrics.requestTracker(req, res, this.next);
   })
 );
@@ -96,6 +97,9 @@ authRouter.delete(
   asyncHandler(async (req, res) => {
     await clearAuth(req);
     res.json({ message: 'logout successful' });
+
+    metrics.userLoggedOut(); 
+    metrics.requestTracker(req, res, this.next);
   })
 );
 

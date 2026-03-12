@@ -4,7 +4,9 @@ const os = require('os');
 // Metrics stored in memory
 const requests = {};
 
+let registerCount = 0;
 let loginCount = 0;
+let logoutCount = 0;
 
 function getCpuUsagePercentage() {
   const cpuUsage = os.loadavg()[0] / os.cpus().length;
@@ -19,8 +21,17 @@ function getMemoryUsagePercentage() {
   return memoryUsage.toFixed(2);
 }
 
+
+function userRegistered() {
+  registerCount++;
+}
+
 function userLoggedIn() {
   loginCount++;
+}
+
+function userLoggedOut() {
+  logoutCount++;
 }
 
 // Middleware to track requests
@@ -116,4 +127,5 @@ function sendMetricToGrafana(metrics) {
 }
 
 
-module.exports = { requestTracker, getCpuUsagePercentage, getMemoryUsagePercentage, userLoggedIn };
+module.exports = { requestTracker, getCpuUsagePercentage, getMemoryUsagePercentage, 
+    userRegistered, userLoggedIn, userLoggedOut };
