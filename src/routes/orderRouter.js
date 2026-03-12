@@ -77,30 +77,22 @@ orderRouter.post(
   '/',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
-    //console.log('order request: ');
     const orderReq = req.body;
-    //console.log('adding order to database: ');
     const order = await DB.addDinerOrder(req.user, orderReq);
-    //console.log('sending fetch request: ');
     const r = await fetch(`${config.factory.url}/api/order`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', authorization: `Bearer ${config.factory.apiKey}` },
       body: JSON.stringify({ diner: { id: req.user.id, name: req.user.name, email: req.user.email }, order }),
     });
-    //console.log('sent fetch: ' + orderReq);
-    //console.log('recieved r: ' + r.body.json);
     const j = await r.json();
     if (r.ok) {
       res.send({ order, followLinkToEndChaos: j.reportUrl, jwt: j.jwt });
     } else {
-      console.log('req: ' + req);
-      console.log('req.json: ' + req.json);
-      console.log('orderReq: ' + orderReq);
-      console.log('orderReq.json: ' + orderReq.json);
-      console.log('recieved r: ' + r.json);
-      res.status(500).send({ message: 'Failed to fulfill order at factory. ', followLinkToEndChaos: j.reportUrl });
+      const problem = { factoryResponse: j, status: r.status };
+      console.log('Factory failed to fulfill order', problem);
+      res.status(500).send({ message: 'Failed to fulfill order at factory', followLinkToEndChaos: j.reportUrl });
     }
-  })
+  }),
 );
 
 module.exports = orderRouter;
