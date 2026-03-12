@@ -1,6 +1,10 @@
 const config = require('./config');
-
 const os = require('os');
+
+// Metrics stored in memory
+const requests = {};
+
+let loginCount = 0;
 
 function getCpuUsagePercentage() {
   const cpuUsage = os.loadavg()[0] / os.cpus().length;
@@ -15,8 +19,9 @@ function getMemoryUsagePercentage() {
   return memoryUsage.toFixed(2);
 }
 
-// Metrics stored in memory
-const requests = {};
+function userLoggedIn() {
+  loginCount++;
+}
 
 // Middleware to track requests
 function requestTracker(req, res, next) {
@@ -34,6 +39,8 @@ setInterval(() => {
 
   metrics.push(createMetric('cpuUsage', getCpuUsagePercentage(), '%', 'sum', 'asDouble', {  }));
   metrics.push(createMetric('memoryUsage', getMemoryUsagePercentage(), '%', 'sum', 'asDouble', {  }));
+
+  metrics.push(createMetric('loginCount', loginCount, '1', 'sum', 'asInt', {}));
 
   console.log('sending new metrics')
   sendMetricToGrafana(metrics);
@@ -100,4 +107,4 @@ function sendMetricToGrafana(metrics) {
 }
 
 
-module.exports = { requestTracker, getCpuUsagePercentage, getMemoryUsagePercentage };
+module.exports = { requestTracker, getCpuUsagePercentage, getMemoryUsagePercentage, userLoggedIn };
