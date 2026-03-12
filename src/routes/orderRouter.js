@@ -93,7 +93,9 @@ orderRouter.post(
     if (r.ok) {
       res.send({ order, followLinkToEndChaos: j.reportUrl, jwt: j.jwt });
     } else {
-      res.status(500).send({ message: 'Failed to fulfill order at factory. r = ' + r.json, followLinkToEndChaos: j.reportUrl });
+      console.log('sent fetch: ' + orderReq);
+      console.log('recieved r: ' + r.body.json);
+      res.status(500).send({ message: 'Failed to fulfill order at factory. ', followLinkToEndChaos: j.reportUrl });
     }
   })
 );
