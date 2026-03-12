@@ -77,9 +77,9 @@ orderRouter.post(
   '/',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
-    console.log('order request: ' + req.json);
+    console.log('order request: ');
     const orderReq = req.body;
-    console.log('adding order to database: ' + orderReq);
+    console.log('adding order to database: ');
     const order = await DB.addDinerOrder(req.user, orderReq);
     console.log('sending fetch request: ');
     const r = await fetch(`${config.factory.url}/api/order`, {
@@ -87,7 +87,8 @@ orderRouter.post(
       headers: { 'Content-Type': 'application/json', authorization: `Bearer ${config.factory.apiKey}` },
       body: JSON.stringify({ diner: { id: req.user.id, name: req.user.name, email: req.user.email }, order }),
     });
-    console.log('sent fetch and got r: ' + r.body.json);
+    console.log('sent fetch: ' + orderReq);
+    console.log('recieved r: ' + r.body.json);
     const j = await r.json();
     if (r.ok) {
       res.send({ order, followLinkToEndChaos: j.reportUrl, jwt: j.jwt });
