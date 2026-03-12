@@ -1,4 +1,3 @@
-const { cpuUsage } = require('process');
 const config = require('./config');
 
 const os = require('os');
