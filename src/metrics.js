@@ -60,7 +60,7 @@ setInterval(() => {
   metrics.push(createMetric('loginCount', loginCount, '1', 'sum', 'asInt', {}));
   metrics.push(createMetric('logoutCount', logoutCount, '1', 'sum', 'asInt', {}));
 
-  metrics.push(createMetric('loggedCount', loggedCount, '1', 'sum', 'asInt', {}));
+  metrics.push(createMetric('loggedInUserCount', loggedCount, '1', 'sum', 'asInt', {}));
 
   console.log('sending new metrics')
   sendMetricToGrafana(metrics);
