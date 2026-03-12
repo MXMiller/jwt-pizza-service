@@ -77,11 +77,11 @@ orderRouter.post(
   '/',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
-    console.log('order request: ');
+    //console.log('order request: ');
     const orderReq = req.body;
-    console.log('adding order to database: ');
+    //console.log('adding order to database: ');
     const order = await DB.addDinerOrder(req.user, orderReq);
-    console.log('sending fetch request: ');
+    //console.log('sending fetch request: ');
     const r = await fetch(`${config.factory.url}/api/order`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', authorization: `Bearer ${config.factory.apiKey}` },
