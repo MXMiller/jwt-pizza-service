@@ -85,7 +85,7 @@ authRouter.put(
     res.json({ user: user, token: auth });
 
     metrics.userLoggedIn();  
-    metrics.requestTracker(req, res, NULL);
+    metrics.requestTracker(req, res, this.next);
   })
 );
 
