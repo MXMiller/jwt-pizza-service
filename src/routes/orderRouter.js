@@ -84,13 +84,13 @@ orderRouter.post(
       headers: { 'Content-Type': 'application/json', authorization: `Bearer ${config.factory.apiKey}` },
       body: JSON.stringify({ diner: { id: req.user.id, name: req.user.name, email: req.user.email }, order }),
     });
-    console.log(req);
-    console.log(r.json);
+    console.log('create order request: ' + req);
+    console.log('r: ' + r.json);
     const j = await r.json();
     if (r.ok) {
       res.send({ order, followLinkToEndChaos: j.reportUrl, jwt: j.jwt });
     } else {
-      res.status(500).send({ message: 'Failed to fulfill order at factory', followLinkToEndChaos: j.reportUrl });
+      res.status(500).send({ message: 'Failed to fulfill order at factory. r = ' + r, followLinkToEndChaos: j.reportUrl });
     }
   })
 );
