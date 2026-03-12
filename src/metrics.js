@@ -8,6 +8,8 @@ let registerCount = 0;
 let loginCount = 0;
 let logoutCount = 0;
 
+let activeCount = 0;
+
 function getCpuUsagePercentage() {
   const cpuUsage = os.loadavg()[0] / os.cpus().length;
   return cpuUsage.toFixed(2) * 100;
@@ -24,14 +26,17 @@ function getMemoryUsagePercentage() {
 
 function userRegistered() {
   registerCount++;
+  activeCount++;
 }
 
 function userLoggedIn() {
   loginCount++;
+  activeCount++;
 }
 
 function userLoggedOut() {
   logoutCount++;
+  activeCount--;
 }
 
 // Middleware to track requests
@@ -54,6 +59,8 @@ setInterval(() => {
   metrics.push(createMetric('registerCount', registerCount, '1', 'sum', 'asInt', {}));
   metrics.push(createMetric('loginCount', loginCount, '1', 'sum', 'asInt', {}));
   metrics.push(createMetric('logoutCount', logoutCount, '1', 'sum', 'asInt', {}));
+
+  metrics.push(createMetric('activeCount', activeCount, '1', 'sum', 'asInt', {}));
 
   console.log('sending new metrics')
   sendMetricToGrafana(metrics);
