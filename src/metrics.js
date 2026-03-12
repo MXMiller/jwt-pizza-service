@@ -82,13 +82,22 @@ function sendMetricToGrafana(metrics) {
   const body = {
     resourceMetrics: [
       {
+        resource: {
+          attributes: [
+            {
+              key: "service.name",
+              value: { stringValue: config.metrics.source }
+            }
+          ]
+        },
         scopeMetrics: [
           {
-            metrics,
-          },
-        ],
-      },
-    ],
+            scope: { name: "custom-metrics" },
+            metrics
+          }
+        ]
+      }
+    ]
   };
 
   fetch(`${config.metrics.endpointUrl}`, {
