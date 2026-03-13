@@ -72,7 +72,7 @@ authRouter.post(
     res.json({ user: user, token: auth });
 
     metrics.userRegistered(); 
-    metrics.requestTracker(req, res, this.next);
+    //metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -86,7 +86,7 @@ authRouter.put(
     res.json({ user: user, token: auth });
 
     metrics.userLoggedIn(); 
-    metrics.requestTracker(req, res, this.next);
+    //metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -99,7 +99,7 @@ authRouter.delete(
     res.json({ message: 'logout successful' });
 
     metrics.userLoggedOut(); 
-    metrics.requestTracker(req, res, this.next);
+    //metrics.requestTracker(req, res, this.next);
   })
 );
 
