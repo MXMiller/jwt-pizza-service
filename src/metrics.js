@@ -53,14 +53,14 @@ setInterval(() => {
     metrics.push(createMetric('requests', requests[endpoint], '1', 'sum', 'asInt', { endpoint }));
   });
 
-  metrics.push(createMetric('cpuUsage', getCpuUsagePercentage(), '%', 'sum', 'asDouble', {  }));
-  metrics.push(createMetric('memoryUsage', getMemoryUsagePercentage(), '%', 'sum', 'asDouble', {  }));
-
   metrics.push(createMetric('registerCount', registerCount, '1', 'sum', 'asInt', {}));
   metrics.push(createMetric('loginCount', loginCount, '1', 'sum', 'asInt', {}));
   metrics.push(createMetric('logoutCount', logoutCount, '1', 'sum', 'asInt', {}));
 
   metrics.push(createMetric('loggedInUserCount', loggedCount, '1', 'sum', 'asInt', {}));
+
+  metrics.push(createMetric('cpuUsage', getCpuUsagePercentage(), '%', 'sum', 'asDouble', {  }));
+  metrics.push(createMetric('memoryUsage', getMemoryUsagePercentage(), '%', 'sum', 'asDouble', {  }));
 
   console.log('sending new metrics')
   sendMetricToGrafana(metrics);
