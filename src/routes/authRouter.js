@@ -44,7 +44,9 @@ async function setAuthUser(req, res, next) {
         req.user = jwt.verify(token, config.jwtSecret);
         req.user.isRole = (role) => !!req.user.roles.find((r) => r.role === role);
       }
+      metrics.authSuccessed();
     } catch {
+      metrics.authFailed();
       req.user = null;
     }
   }
@@ -54,6 +56,7 @@ async function setAuthUser(req, res, next) {
 // Authenticate token
 authRouter.authenticateToken = (req, res, next) => {
   if (!req.user) {
+    metrics.authFailed();
     return res.status(401).send({ message: 'unauthorized' });
   }
   next();
@@ -73,6 +76,7 @@ authRouter.post(
 
     metrics.userRegistered(); 
     metrics.requestTracker(req, res, this.next);
+    metrics.authSuccessed();
   })
 );
 
@@ -87,6 +91,7 @@ authRouter.put(
 
     metrics.userLoggedIn(); 
     metrics.requestTracker(req, res, this.next);
+    metrics.authSuccessed();
   })
 );
 

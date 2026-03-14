@@ -8,7 +8,33 @@ let registerCount = 0;
 let loginCount = 0;
 let logoutCount = 0;
 
-let loggedCount = 0;
+let loggedInUserCount = 0;
+
+let authSuccessCount = 0;
+let authFailCount = 0;
+
+function userRegistered() {
+  registerCount++;
+  loggedInUserCount++;
+}
+
+function userLoggedIn() {
+  loginCount++;
+  loggedInUserCount++;
+}
+
+function userLoggedOut() {
+  logoutCount++;
+  loggedInUserCount--;
+}
+
+function authSuccessed() {
+  authSuccessCount++;
+}
+
+function authFailed() {
+  authFailCount++;
+}
 
 function getCpuUsagePercentage() {
   const cpuUsage = os.loadavg()[0] / os.cpus().length;
@@ -21,22 +47,6 @@ function getMemoryUsagePercentage() {
   const usedMemory = totalMemory - freeMemory;
   const memoryUsage = (usedMemory / totalMemory) * 100;
   return memoryUsage.toFixed(2);
-}
-
-
-function userRegistered() {
-  registerCount++;
-  loggedCount++;
-}
-
-function userLoggedIn() {
-  loginCount++;
-  loggedCount++;
-}
-
-function userLoggedOut() {
-  logoutCount++;
-  loggedCount--;
 }
 
 // Middleware to track requests
@@ -57,7 +67,10 @@ setInterval(() => {
   metrics.push(createMetric('loginCount', loginCount, '1', 'sum', 'asInt', {}));
   metrics.push(createMetric('logoutCount', logoutCount, '1', 'sum', 'asInt', {}));
 
-  metrics.push(createMetric('loggedInUserCount', loggedCount, '1', 'sum', 'asInt', {}));
+  metrics.push(createMetric('loggedInUserCount', loggedInUserCount, '1', 'sum', 'asInt', {}));
+
+  metrics.push(createMetric('authSuccessCount', authSuccessCount, '1', 'sum', 'asInt', {}));
+  metrics.push(createMetric('authFailCount', authFailCount, '1', 'sum', 'asInt', {}));
 
   metrics.push(createMetric('cpuUsage', getCpuUsagePercentage(), '%', 'sum', 'asDouble', {  }));
   metrics.push(createMetric('memoryUsage', getMemoryUsagePercentage(), '%', 'sum', 'asDouble', {  }));
@@ -137,4 +150,5 @@ function sendMetricToGrafana(metrics) {
 
 
 module.exports = { requestTracker, getCpuUsagePercentage, getMemoryUsagePercentage, 
-    userRegistered, userLoggedIn, userLoggedOut };
+    userRegistered, userLoggedIn, userLoggedOut,
+    authSuccessed, authFailed };
