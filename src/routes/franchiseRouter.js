@@ -2,6 +2,10 @@ const express = require('express');
 const { DB, Role } = require('../database/database.js');
 const { authRouter } = require('./authRouter.js');
 const { StatusCodeError, asyncHandler } = require('../endpointHelper.js');
+const metrics = require('../metrics.js')
+const app = express();
+
+app.use(metrics.requestTracker);
 
 const franchiseRouter = express.Router();
 
@@ -61,6 +65,8 @@ franchiseRouter.get(
   asyncHandler(async (req, res) => {
     const [franchises, more] = await DB.getFranchises(req.user, req.query.page, req.query.limit, req.query.name);
     res.json({ franchises, more });
+
+    metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -76,6 +82,8 @@ franchiseRouter.get(
     }
 
     res.json(result);
+
+    metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -90,6 +98,8 @@ franchiseRouter.post(
 
     const franchise = req.body;
     res.send(await DB.createFranchise(franchise));
+
+    metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -100,6 +110,8 @@ franchiseRouter.delete(
     const franchiseId = Number(req.params.franchiseId);
     await DB.deleteFranchise(franchiseId);
     res.json({ message: 'franchise deleted' });
+
+    metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -115,6 +127,8 @@ franchiseRouter.post(
     }
 
     res.send(await DB.createStore(franchise.id, req.body));
+
+    metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -132,6 +146,8 @@ franchiseRouter.delete(
     const storeId = Number(req.params.storeId);
     await DB.deleteStore(franchiseId, storeId);
     res.json({ message: 'store deleted' });
+
+    metrics.requestTracker(req, res, this.next);
   })
 );
 
