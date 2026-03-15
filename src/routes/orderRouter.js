@@ -90,12 +90,12 @@ orderRouter.post(
     });
     const j = await r.json();
     if (r.ok) {
-      /*let total = 0;
+      let total = 0;
       for(const item of order.items){
         total = total + item.price;
       }
-      metrics.updateRevenue(total);*/
-      //metrics.orderSuccess();
+      metrics.updateRevenue(total);
+      metrics.orderSucceeded();
       res.send({ order, followLinkToEndChaos: j.reportUrl, jwt: j.jwt });
     } else {
       const problem = { factoryResponse: j, status: r.status };
