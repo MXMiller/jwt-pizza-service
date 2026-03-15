@@ -48,6 +48,7 @@ orderRouter.docs = [
 orderRouter.get(
   '/menu',
   asyncHandler(async (req, res) => {
+    metrics.requestTracker(req, res, this.next);
     res.send(await DB.getMenu());
   })
 );
@@ -72,6 +73,7 @@ orderRouter.get(
   '/',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+    metrics.requestTracker(req, res, this.next);
     res.json(await DB.getOrders(req.user, req.query.page));
   })
 );
@@ -81,6 +83,7 @@ orderRouter.post(
   '/',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+    let startTime = System.currentTimeMillis();
     const orderReq = req.body;
     const order = await DB.addDinerOrder(req.user, orderReq);
     const r = await fetch(`${config.factory.url}/api/order`, {
@@ -96,6 +99,8 @@ orderRouter.post(
       }
       metrics.updateRevenue(total);
       metrics.orderSucceeded();
+      let endTime = System.currentTimeMillis();
+      metrics.calcOrderLatency(startTime, endTime)
       res.send({ order, followLinkToEndChaos: j.reportUrl, jwt: j.jwt });
     } else {
       const problem = { factoryResponse: j, status: r.status };

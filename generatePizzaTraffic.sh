@@ -48,7 +48,7 @@ pid2=$!
 while true; do
   token=$(login "f@jwt.com" "franchisee")
   echo "Login franchisee..." $( [ -z "$token" ] && echo "false" || echo "true" )
-  sleep 50 #110
+  sleep 110
   result=$(execute_curl "-X DELETE $host/api/auth -H \"Authorization: Bearer $token\"")
   echo "Logging out franchisee..." $result
   sleep 10
@@ -61,7 +61,7 @@ while true; do
   echo "Login diner..." $( [ -z "$token" ] && echo "false" || echo "true" )
   result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 1, \"description\": \"Veggie\", \"price\": 0.05 }]}'  -H \"Authorization: Bearer $token\"")
   echo "Bought a pizza..." $result
-  sleep 5 #20
+  sleep 20
   result=$(execute_curl "-X DELETE $host/api/auth -H \"Authorization: Bearer $token\"")
   echo "Logging out diner..." $result
   sleep 30

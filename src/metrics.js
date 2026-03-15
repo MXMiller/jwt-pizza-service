@@ -17,6 +17,8 @@ let orderCount = 0;
 let orderFailCount = 0;
 let revenue = 0;
 
+let orderLatency = 0;
+
 function userRegistered() {
   registerCount++;
   loggedInUserCount++;
@@ -51,6 +53,11 @@ function orderFailed() {
 function updateRevenue(orderTotal) {
   revenue = revenue + orderTotal;
 }
+
+function calcOrderLatency(start, end) {
+  orderLatency = end - start; 
+}
+
 
 function getCpuUsagePercentage() {
   const cpuUsage = os.loadavg()[0] / os.cpus().length;
@@ -91,6 +98,8 @@ setInterval(() => {
   metrics.push(createMetric('orderCount', orderCount, '1', 'sum', 'asInt', {}));
   metrics.push(createMetric('orderFailCount', orderFailCount, '1', 'sum', 'asInt', {}));
   metrics.push(createMetric('revenue', revenue, '1', 'sum', 'asDouble', {}));
+
+  metrics.push(createMetric('orderLatency', orderLatency, '1', 'sum', 'asDouble', {}));
 
   metrics.push(createMetric('cpuUsage', getCpuUsagePercentage(), '%', 'sum', 'asDouble', {  }));
   metrics.push(createMetric('memoryUsage', getMemoryUsagePercentage(), '%', 'sum', 'asDouble', {  }));
@@ -172,4 +181,5 @@ function sendMetricToGrafana(metrics) {
 module.exports = { requestTracker, getCpuUsagePercentage, getMemoryUsagePercentage, 
     userRegistered, userLoggedIn, userLoggedOut,
     authSucceeded, authFailed,
-    orderSucceeded, orderFailed, updateRevenue };
+    orderSucceeded, orderFailed, updateRevenue,
+    calcOrderLatency };
