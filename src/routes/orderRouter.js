@@ -91,8 +91,8 @@ orderRouter.post(
     const j = await r.json();
     if (r.ok) {
       let total = 0;
-      for(let i = 0; i < r.req.body.items.length; i++){
-        total = total + r.req.body.items[i].price;
+      for(const item of order.items){
+        total = total + item.price;
       }
       metrics.orderSuccess();
       metrics.updateRevenue(total);
