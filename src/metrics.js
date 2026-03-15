@@ -13,6 +13,10 @@ let loggedInUserCount = 0;
 let authSuccessCount = 0;
 let authFailCount = 0;
 
+let orderCount = 0;
+let orderFailCount = 0;
+let revenue = 0;
+
 function userRegistered() {
   registerCount++;
   loggedInUserCount++;
@@ -28,12 +32,24 @@ function userLoggedOut() {
   loggedInUserCount--;
 }
 
-function authSuccessed() {
+function authSucceeded() {
   authSuccessCount++;
 }
 
 function authFailed() {
   authFailCount++;
+}
+
+function orderSucceeded() {
+  orderCount++;
+}
+
+function orderFailed() {
+  orderFailCount++;
+}
+
+function updateRevenue(orderTotal) {
+  revenue = revenue + orderTotal;
 }
 
 function getCpuUsagePercentage() {
@@ -71,6 +87,10 @@ setInterval(() => {
 
   metrics.push(createMetric('authSuccessCount', authSuccessCount, '1', 'sum', 'asInt', {}));
   metrics.push(createMetric('authFailCount', authFailCount, '1', 'sum', 'asInt', {}));
+
+  metrics.push(createMetric('orderCount', orderCount, '1', 'sum', 'asInt', {}));
+  metrics.push(createMetric('orderFailCount', orderFailCount, '1', 'sum', 'asInt', {}));
+  metrics.push(createMetric('revenue', revenue, '1', 'sum', 'asInt', {}));
 
   metrics.push(createMetric('cpuUsage', getCpuUsagePercentage(), '%', 'sum', 'asDouble', {  }));
   metrics.push(createMetric('memoryUsage', getMemoryUsagePercentage(), '%', 'sum', 'asDouble', {  }));
@@ -151,4 +171,5 @@ function sendMetricToGrafana(metrics) {
 
 module.exports = { requestTracker, getCpuUsagePercentage, getMemoryUsagePercentage, 
     userRegistered, userLoggedIn, userLoggedOut,
-    authSuccessed, authFailed };
+    authSucceeded, authFailed,
+    orderSucceeded, orderFailed, updateRevenue };

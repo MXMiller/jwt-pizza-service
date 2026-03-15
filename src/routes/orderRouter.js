@@ -3,6 +3,10 @@ const config = require('../config.js');
 const { Role, DB } = require('../database/database.js');
 const { authRouter } = require('./authRouter.js');
 const { asyncHandler, StatusCodeError } = require('../endpointHelper.js');
+const metrics = require('../metrics.js')
+const app = express();
+
+app.use(metrics.requestTracker);
 
 const orderRouter = express.Router();
 
@@ -86,11 +90,18 @@ orderRouter.post(
     });
     const j = await r.json();
     if (r.ok) {
+      let total = 0;
+      for(let i = 0; i < r.req.body.items.length; i++){
+        total = total + r.req.body.items[i].price;
+      }
+      metrics.orderSuccess();
+      metrics.updateRevenue(total);
       res.send({ order, followLinkToEndChaos: j.reportUrl, jwt: j.jwt });
     } else {
       const problem = { factoryResponse: j, status: r.status };
       console.log('Factory failed to fulfill order', problem);
       console.log('factory api key: ', config.factory.apiKey);
+      metrics.orderFailed();
       res.status(500).send({ message: 'Failed to fulfill order at factory', followLinkToEndChaos: j.reportUrl });
     }
   }),

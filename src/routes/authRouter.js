@@ -44,7 +44,7 @@ async function setAuthUser(req, res, next) {
         req.user = jwt.verify(token, config.jwtSecret);
         req.user.isRole = (role) => !!req.user.roles.find((r) => r.role === role);
       }
-      metrics.authSuccessed();
+      metrics.authSucceeded();
     } catch {
       metrics.authFailed();
       req.user = null;
@@ -76,7 +76,7 @@ authRouter.post(
 
     metrics.userRegistered(); 
     metrics.requestTracker(req, res, this.next);
-    metrics.authSuccessed();
+    metrics.authSucceeded();
   })
 );
 
@@ -91,7 +91,7 @@ authRouter.put(
 
     metrics.userLoggedIn(); 
     metrics.requestTracker(req, res, this.next);
-    metrics.authSuccessed();
+    metrics.authSucceeded();
   })
 );
 
