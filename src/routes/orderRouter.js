@@ -95,7 +95,7 @@ orderRouter.post(
         total = total + item.price;
       }
       metrics.updateRevenue(total);*/
-      metrics.orderSuccess();
+      //metrics.orderSuccess();
       res.send({ order, followLinkToEndChaos: j.reportUrl, jwt: j.jwt });
     } else {
       const problem = { factoryResponse: j, status: r.status };
