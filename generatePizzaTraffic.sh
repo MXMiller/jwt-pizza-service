@@ -30,7 +30,7 @@ login() {
 
 # Simulate a user requesting the menu every 3 seconds
 while true; do
-  result=$(execute_curl $host/api/order/menu)
+  result=$(execute_curl "-X GET\"$host/api/order/menu\"")
   echo "Requesting menu..." $result
   sleep 3
 done &
@@ -48,7 +48,7 @@ pid2=$!
 while true; do
   token=$(login "f@jwt.com" "franchisee")
   echo "Login franchisee..." $( [ -z "$token" ] && echo "false" || echo "true" )
-  sleep 110
+  sleep 50 
   result=$(execute_curl "-X DELETE $host/api/auth -H \"Authorization: Bearer $token\"")
   echo "Logging out franchisee..." $result
   sleep 10
