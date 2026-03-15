@@ -48,7 +48,6 @@ orderRouter.docs = [
 orderRouter.get(
   '/menu',
   asyncHandler(async (req, res) => {
-    metrics.requestTracker(req, res, this.next);
     res.send(await DB.getMenu());
   })
 );
@@ -73,7 +72,6 @@ orderRouter.get(
   '/',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
-    metrics.requestTracker(req, res, this.next);
     res.json(await DB.getOrders(req.user, req.query.page));
   })
 );
