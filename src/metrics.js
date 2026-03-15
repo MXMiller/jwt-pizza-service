@@ -90,7 +90,7 @@ setInterval(() => {
 
   metrics.push(createMetric('orderCount', orderCount, '1', 'sum', 'asInt', {}));
   metrics.push(createMetric('orderFailCount', orderFailCount, '1', 'sum', 'asInt', {}));
-  metrics.push(createMetric('revenue', revenue, '1', 'sum', 'asInt', {}));
+  metrics.push(createMetric('revenue', revenue, '1', 'sum', 'asDouble', {}));
 
   metrics.push(createMetric('cpuUsage', getCpuUsagePercentage(), '%', 'sum', 'asDouble', {  }));
   metrics.push(createMetric('memoryUsage', getMemoryUsagePercentage(), '%', 'sum', 'asDouble', {  }));
