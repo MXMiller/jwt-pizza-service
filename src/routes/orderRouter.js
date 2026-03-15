@@ -49,6 +49,8 @@ orderRouter.get(
   '/menu',
   asyncHandler(async (req, res) => {
     res.send(await DB.getMenu());
+    
+    metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -64,6 +66,8 @@ orderRouter.put(
     const addMenuItemReq = req.body;
     await DB.addMenuItem(addMenuItemReq);
     res.send(await DB.getMenu());
+
+    metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -91,6 +95,8 @@ orderRouter.post(
     });
     const j = await r.json();
     if (r.ok) {
+      res.send({ order, followLinkToEndChaos: j.reportUrl, jwt: j.jwt });
+
       let total = 0;
       for(const item of order.items){
         total = total + item.price;
@@ -99,7 +105,7 @@ orderRouter.post(
       metrics.orderSucceeded();
       //let endTime = System.currentTimeMillis();
       //metrics.calcOrderLatency(startTime, endTime)
-      res.send({ order, followLinkToEndChaos: j.reportUrl, jwt: j.jwt });
+      metrics.requestTracker(req, res, this.next);
     } else {
       const problem = { factoryResponse: j, status: r.status };
       console.log('Factory failed to fulfill order', problem);
