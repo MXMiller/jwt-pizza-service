@@ -112,7 +112,7 @@ setInterval(() => {
 
   console.log('sending new metrics')
   sendMetricToGrafana(metrics);
-}, 5000);
+}, 1000);
 
 function createMetric(metricName, metricValue, metricUnit, metricType, valueType, attributes) {
   attributes = { ...attributes, source: config.metrics.source };
