@@ -10,16 +10,6 @@ let logoutCount = 0;
 
 let loggedInUserCount = 0;
 
-let authSuccessCount = 0;
-let authFailCount = 0;
-
-let orderCount = 0;
-let orderFailCount = 0;
-let revenue = 0;
-
-let orderLatency = 0;
-let reqLatency = 0;
-
 function userRegistered() {
   registerCount++;
   loggedInUserCount++;
@@ -35,6 +25,9 @@ function userLoggedOut() {
   loggedInUserCount--;
 }
 
+let authSuccessCount = 0;
+let authFailCount = 0;
+
 function authSucceeded() {
   authSuccessCount++;
 }
@@ -42,6 +35,10 @@ function authSucceeded() {
 function authFailed() {
   authFailCount++;
 }
+
+let orderCount = 0;
+let orderFailCount = 0;
+let revenue = 0;
 
 function orderSucceeded() {
   orderCount++;
@@ -55,6 +52,9 @@ function updateRevenue(orderTotal) {
   revenue = revenue + orderTotal;
 }
 
+let orderLatency = 0;
+let reqLatency = 0;
+
 function calcOrderLatency(start, end) {
   orderLatency = end - start; 
 }
@@ -63,6 +63,31 @@ function calcReqLatency(start, end) {
   reqLatency = end - start; 
 }
 
+let veggieCount = 0;
+let pepperoniCount = 0;
+let margaritaCount = 0;
+let crustyCount = 0;
+let charredLeopardCount = 0;
+
+function veggieSold() {
+  veggieCount++;
+}
+
+function pepperoniSold() {
+  pepperoniCount++;
+}
+
+function margaritaSold() {
+  margaritaCount++;
+}
+
+function crustySold() {
+  crustyCount++;
+}
+
+function charredLeopardSold() {
+  charredLeopardCount++;
+}
 
 function getCpuUsagePercentage() {
   const cpuUsage = os.loadavg()[0] / os.cpus().length;
@@ -109,6 +134,12 @@ setInterval(() => {
 
   metrics.push(createMetric('cpuUsage', getCpuUsagePercentage(), '%', 'sum', 'asDouble', {  }));
   metrics.push(createMetric('memoryUsage', getMemoryUsagePercentage(), '%', 'sum', 'asDouble', {  }));
+
+  metrics.push(createMetric('veggieCount', veggieCount, '1', 'sum', 'asDouble', {}));
+  metrics.push(createMetric('pepperoniCount', pepperoniCount, '1', 'sum', 'asDouble', {}));
+  metrics.push(createMetric('margaritaCount', margaritaCount, '1', 'sum', 'asDouble', {}));
+  metrics.push(createMetric('crustyCount', crustyCount, '1', 'sum', 'asDouble', {}));
+  metrics.push(createMetric('charredLeopardCount', charredLeopardCount, '1', 'sum', 'asDouble', {}));
 
   console.log('sending new metrics')
   sendMetricToGrafana(metrics);
@@ -188,4 +219,5 @@ module.exports = { requestTracker, getCpuUsagePercentage, getMemoryUsagePercenta
     userRegistered, userLoggedIn, userLoggedOut,
     authSucceeded, authFailed,
     orderSucceeded, orderFailed, updateRevenue,
-    calcOrderLatency, calcReqLatency };
+    calcOrderLatency, calcReqLatency,
+    veggieSold, pepperoniSold, margaritaSold, crustySold, charredLeopardSold };

@@ -199,6 +199,18 @@ class DB {
       for (const item of order.items) {
         const menuId = await this.getID(connection, 'id', item.menuId, 'menu');
         await this.query(connection, `INSERT INTO orderItem (orderId, menuId, description, price) VALUES (?, ?, ?, ?)`, [orderId, menuId, item.description, item.price]);
+        
+        if(item.menuId == 1){
+          metrics.veggieSold();
+        } else if(item.menuId == 2){
+          metrics.pepperoniSold();
+        } else if(item.menuId == 3){
+          metrics.margaritaSold();
+        } else if(item.menuId == 4){
+          metrics.crustySold();
+        } else if(item.menuId == 5){
+          metrics.charredLeopardSold();
+        }
       }
       return { ...order, id: orderId };
     } finally {
