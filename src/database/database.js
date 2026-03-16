@@ -67,6 +67,7 @@ class DB {
       const userResult = await this.query(connection, `SELECT * FROM user WHERE email=?`, [email]);
       const user = userResult[0];
       if (!user || (password && !(await bcrypt.compare(password, user.password)))) {
+        metrics.authFailed();
         throw new StatusCodeError('unknown user', 404);
       }
 
@@ -211,6 +212,7 @@ class DB {
       for (const admin of franchise.admins) {
         const adminUser = await this.query(connection, `SELECT id, name FROM user WHERE email=?`, [admin.email]);
         if (adminUser.length == 0) {
+          metrics.authFailed();
           throw new StatusCodeError(`unknown user for franchise admin ${admin.email} provided`, 404);
         }
         admin.id = adminUser[0].id;

@@ -30,7 +30,7 @@ login() {
 
 # Simulate a user requesting the menu every 3 seconds
 while true; do
-  result=$(execute_curl $host/api/order/menu)
+  result=$(execute_curl "-X GET \"$host/api/order/menu\"")
   echo "Requesting menu..." $result
   sleep 3
 done &
