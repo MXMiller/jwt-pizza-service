@@ -18,6 +18,7 @@ let orderFailCount = 0;
 let revenue = 0;
 
 let orderLatency = 0;
+let reqLatency = 0;
 
 function userRegistered() {
   registerCount++;
@@ -56,6 +57,10 @@ function updateRevenue(orderTotal) {
 
 function calcOrderLatency(start, end) {
   orderLatency = end - start; 
+}
+
+function calcReqLatency(start, end) {
+  reqLatency = end - start; 
 }
 
 
@@ -100,6 +105,7 @@ setInterval(() => {
   metrics.push(createMetric('revenue', revenue, '1', 'sum', 'asDouble', {}));
 
   metrics.push(createMetric('orderLatency', orderLatency, '1', 'sum', 'asDouble', {}));
+  metrics.push(createMetric('reqLatency', reqLatency, '1', 'sum', 'asDouble', {}));
 
   metrics.push(createMetric('cpuUsage', getCpuUsagePercentage(), '%', 'sum', 'asDouble', {  }));
   metrics.push(createMetric('memoryUsage', getMemoryUsagePercentage(), '%', 'sum', 'asDouble', {  }));
@@ -182,4 +188,4 @@ module.exports = { requestTracker, getCpuUsagePercentage, getMemoryUsagePercenta
     userRegistered, userLoggedIn, userLoggedOut,
     authSucceeded, authFailed,
     orderSucceeded, orderFailed, updateRevenue,
-    calcOrderLatency };
+    calcOrderLatency, calcReqLatency };

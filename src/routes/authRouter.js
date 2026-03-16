@@ -66,6 +66,8 @@ authRouter.authenticateToken = (req, res, next) => {
 authRouter.post(
   '/',
   asyncHandler(async (req, res) => {
+    let startTime = Date.now();
+    
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'name, email, and password are required' });
@@ -75,8 +77,12 @@ authRouter.post(
     res.json({ user: user, token: auth });
 
     metrics.userRegistered(); 
-    metrics.requestTracker(req, res, this.next);
     metrics.authSucceeded();
+
+    metrics.requestTracker(req, res, this.next);
+    
+    let endTime = Date.now();
+    metrics.calcReqLatency(startTime, endTime)
   })
 );
 
@@ -84,14 +90,20 @@ authRouter.post(
 authRouter.put(
   '/',
   asyncHandler(async (req, res) => {
+    let startTime = Date.now();
+    
     const { email, password } = req.body;
     const user = await DB.getUser(email, password);
     const auth = await setAuth(user);
     res.json({ user: user, token: auth });
 
     metrics.userLoggedIn(); 
-    metrics.requestTracker(req, res, this.next);
     metrics.authSucceeded();
+
+    metrics.requestTracker(req, res, this.next);
+    
+    let endTime = Date.now();
+    metrics.calcReqLatency(startTime, endTime)
   })
 );
 
@@ -100,11 +112,17 @@ authRouter.delete(
   '/',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+    let startTime = Date.now();
+    
     await clearAuth(req);
     res.json({ message: 'logout successful' });
 
     metrics.userLoggedOut(); 
+
     metrics.requestTracker(req, res, this.next);
+    
+    let endTime = Date.now();
+    metrics.calcReqLatency(startTime, endTime)
   })
 );
 

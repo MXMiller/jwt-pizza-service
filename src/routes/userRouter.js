@@ -54,7 +54,12 @@ userRouter.get(
   '/me',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+    let startTime = Date.now();
+    
     res.json(req.user);
+
+    let endTime = Date.now();
+    metrics.calcReqLatency(startTime, endTime)
   })
 );
 
@@ -63,8 +68,13 @@ userRouter.get(
   '/',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+    let startTime = Date.now();
+    
     const [users, more] = await DB.getUsers(req.user, req.query.page, req.query.limit, req.query.name);
     res.json({ users, more });
+
+    let endTime = Date.now();
+    metrics.calcReqLatency(startTime, endTime)
   })
 );
 
@@ -73,6 +83,8 @@ userRouter.put(
   '/:userId',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+    let startTime = Date.now();
+    
     const { name, email, password } = req.body;
     const userId = Number(req.params.userId);
     const user = req.user;
@@ -83,6 +95,9 @@ userRouter.put(
     const updatedUser = await DB.updateUser(userId, name, email, password);
     const auth = await setAuth(updatedUser);
     res.json({ user: updatedUser, token: auth });
+
+    let endTime = Date.now();
+    metrics.calcReqLatency(startTime, endTime)
   })
 );
 
@@ -91,9 +106,14 @@ userRouter.delete(
   '/:userId',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+    let startTime = Date.now();
+    
     const userId = Number(req.params.userId);
     await DB.deleteUser(userId);
     res.json({ message: 'user deleted' });
+
+    let endTime = Date.now();
+    metrics.calcReqLatency(startTime, endTime)
   })
 );
 

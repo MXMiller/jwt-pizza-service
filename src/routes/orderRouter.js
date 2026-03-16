@@ -48,9 +48,14 @@ orderRouter.docs = [
 orderRouter.get(
   '/menu',
   asyncHandler(async (req, res) => {
+    let startTime = Date.now();
+
     res.send(await DB.getMenu());
     
     metrics.requestTracker(req, res, this.next);
+
+    let endTime = Date.now();
+    metrics.calcReqLatency(startTime, endTime);
   })
 );
 
@@ -59,6 +64,8 @@ orderRouter.put(
   '/menu',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+    let startTime = Date.now();
+
     if (!req.user.isRole(Role.Admin)) {
       throw new StatusCodeError('unable to add menu item', 403);
     }
@@ -68,6 +75,9 @@ orderRouter.put(
     res.send(await DB.getMenu());
 
     metrics.requestTracker(req, res, this.next);
+
+    let endTime = Date.now();
+    metrics.calcReqLatency(startTime, endTime);
   })
 );
 
@@ -76,7 +86,12 @@ orderRouter.get(
   '/',
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
+    let startTime = Date.now();
+
     res.json(await DB.getOrders(req.user, req.query.page));
+
+    let endTime = Date.now();
+    metrics.calcReqLatency(startTime, endTime);
   })
 );
 
@@ -86,6 +101,7 @@ orderRouter.post(
   authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
     let startTime = Date.now();
+
     const orderReq = req.body;
     const order = await DB.addDinerOrder(req.user, orderReq);
     const r = await fetch(`${config.factory.url}/api/order`, {
@@ -102,10 +118,14 @@ orderRouter.post(
         total = total + item.price;
       }
       metrics.updateRevenue(total);
+
       metrics.orderSucceeded();
-      let endTime = Date.now();
-      metrics.calcOrderLatency(startTime, endTime)
+
       metrics.requestTracker(req, res, this.next);
+
+      let endTime = Date.now();
+      metrics.calcOrderLatency(startTime, endTime);
+      metrics.calcReqLatency(startTime, endTime);
     } else {
       const problem = { factoryResponse: j, status: r.status };
       console.log('Factory failed to fulfill order', problem);
