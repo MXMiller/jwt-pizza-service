@@ -62,19 +62,19 @@ while true; do
 
   result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 1, \"description\": \"Veggie\", \"price\": 0.05 }]}'  -H \"Authorization: Bearer $token\"")
   echo "Bought a veggie..." $result
-  sleep 5
+  sleep 1
   result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 2, \"description\": \"Pepperoni\", \"price\": 0.0.0042 }]}'  -H \"Authorization: Bearer $token\"")
   echo "Bought a pepporoni..." $result
-  sleep 7
+  sleep 2
   result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 3, \"description\": \"Margarita\", \"price\": 0.0.0042 }]}'  -H \"Authorization: Bearer $token\"")
   echo "Bought a margarita..." $result
-  sleep 6
+  sleep 3
   result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 4, \"description\": \"Crusty\", \"price\": 0.0.0042 }]}'  -H \"Authorization: Bearer $token\"")
   echo "Bought a crusty..." $result
-  sleep 8
+  sleep 4
   result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 5, \"description\": \"Charred Leopard\", \"price\": 0.0.0042 }]}'  -H \"Authorization: Bearer $token\"")
   echo "Bought a charred leopard..." $result
-  sleep 10
+  sleep 5
 
   result=$(execute_curl "-X DELETE $host/api/auth -H \"Authorization: Bearer $token\"")
   echo "Logging out diner..." $result
