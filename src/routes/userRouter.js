@@ -63,7 +63,7 @@ userRouter.get(
     res.json(req.user);
 
     let endTime = Date.now();
-    metrics.calcReqLatency(startTime, endTime)
+    metrics.calcReqLatency(startTime, endTime);
   })
 );
 
@@ -78,7 +78,7 @@ userRouter.get(
     res.json({ users, more });
 
     let endTime = Date.now();
-    metrics.calcReqLatency(startTime, endTime)
+    metrics.calcReqLatency(startTime, endTime);;
   })
 );
 
@@ -101,7 +101,7 @@ userRouter.put(
     res.json({ user: updatedUser, token: auth });
 
     let endTime = Date.now();
-    metrics.calcReqLatency(startTime, endTime)
+    metrics.calcReqLatency(startTime, endTime);
   })
 );
 
@@ -117,7 +117,7 @@ userRouter.delete(
     res.json({ message: 'user deleted' });
 
     let endTime = Date.now();
-    metrics.calcReqLatency(startTime, endTime)
+    metrics.calcReqLatency(startTime, endTime);
   })
 );
 

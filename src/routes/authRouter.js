@@ -82,7 +82,7 @@ authRouter.post(
     metrics.requestTracker(req, res, this.next);
     
     let endTime = Date.now();
-    metrics.calcReqLatency(startTime, endTime)
+    metrics.calcReqLatency(startTime, endTime);
   })
 );
 
@@ -103,7 +103,7 @@ authRouter.put(
     metrics.requestTracker(req, res, this.next);
     
     let endTime = Date.now();
-    metrics.calcReqLatency(startTime, endTime)
+    metrics.calcReqLatency(startTime, endTime);
   })
 );
 
@@ -122,7 +122,7 @@ authRouter.delete(
     metrics.requestTracker(req, res, this.next);
     
     let endTime = Date.now();
-    metrics.calcReqLatency(startTime, endTime)
+    metrics.calcReqLatency(startTime, endTime);
   })
 );
 
