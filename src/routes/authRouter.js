@@ -78,11 +78,11 @@ authRouter.post(
 
     metrics.userRegistered(); 
     metrics.authSucceeded();
-
-    metrics.requestTracker(req, res, this.next);
     
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
+    
+    metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -99,11 +99,11 @@ authRouter.put(
 
     metrics.userLoggedIn(); 
     metrics.authSucceeded();
-
-    metrics.requestTracker(req, res, this.next);
     
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
+
+    metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -117,12 +117,12 @@ authRouter.delete(
     await clearAuth(req);
     res.json({ message: 'logout successful' });
 
-    metrics.userLoggedOut(); 
-
-    metrics.requestTracker(req, res, this.next);
+    metrics.userLoggedOut();
     
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
+
+    metrics.requestTracker(req, res, this.next);
   })
 );
 

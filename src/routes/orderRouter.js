@@ -51,11 +51,11 @@ orderRouter.get(
     let startTime = Date.now();
 
     res.send(await DB.getMenu());
-    
-    metrics.requestTracker(req, res, this.next);
 
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
+    
+    metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -74,10 +74,10 @@ orderRouter.put(
     await DB.addMenuItem(addMenuItemReq);
     res.send(await DB.getMenu());
 
-    metrics.requestTracker(req, res, this.next);
-
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
+
+    metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -121,11 +121,11 @@ orderRouter.post(
 
       metrics.orderSucceeded();
 
-      metrics.requestTracker(req, res, this.next);
-
       let endTime = Date.now();
       metrics.calcOrderLatency(startTime, endTime);
       metrics.calcReqLatency(startTime, endTime);
+
+      metrics.requestTracker(req, res, this.next);
     } else {
       const problem = { factoryResponse: j, status: r.status };
       console.log('Factory failed to fulfill order', problem);
