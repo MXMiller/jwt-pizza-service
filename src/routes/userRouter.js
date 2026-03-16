@@ -2,6 +2,10 @@ const express = require('express');
 const { asyncHandler } = require('../endpointHelper.js');
 const { DB, Role } = require('../database/database.js');
 const { authRouter, setAuth } = require('./authRouter.js');
+const metrics = require('../metrics.js')
+const app = express();
+
+app.use(metrics.requestTracker);
 
 const userRouter = express.Router();
 
