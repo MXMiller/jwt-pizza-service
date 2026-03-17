@@ -60,25 +60,39 @@ while true; do
   token=$(login "d@jwt.com" "diner")
   echo "Login diner..." $( [ -z "$token" ] && echo "false" || echo "true" )
 
-  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 1, \"description\": \"Veggie\", \"price\": 0.05 }]}'  -H \"Authorization: Bearer $token\"")
-  echo "Bought a veggie..." $result
-  sleep 1
-  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 2, \"description\": \"Pepperoni\", \"price\": 0.0.0042 }]}'  -H \"Authorization: Bearer $token\"")
-  echo "Bought a pepporoni..." $result
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 1, \"description\": \"Veggie\", \"price\": 0.0038 }]}'  -H \"Authorization: Bearer $token\"")
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 1, \"description\": \"Veggie\", \"price\": 0.0038 }]}'  -H \"Authorization: Bearer $token\"")
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 1, \"description\": \"Veggie\", \"price\": 0.0038 }]}'  -H \"Authorization: Bearer $token\"")
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 1, \"description\": \"Veggie\", \"price\": 0.0038 }]}'  -H \"Authorization: Bearer $token\"")
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 1, \"description\": \"Veggie\", \"price\": 0.0038 }]}'  -H \"Authorization: Bearer $token\"")
+  echo "Bought 5 veggie..." $result
   sleep 2
-  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 3, \"description\": \"Margarita\", \"price\": 0.0.0042 }]}'  -H \"Authorization: Bearer $token\"")
-  echo "Bought a margarita..." $result
-  sleep 3
-  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 4, \"description\": \"Crusty\", \"price\": 0.0.0042 }]}'  -H \"Authorization: Bearer $token\"")
-  echo "Bought a crusty..." $result
-  sleep 4
-  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 5, \"description\": \"Charred Leopard\", \"price\": 0.0.0042 }]}'  -H \"Authorization: Bearer $token\"")
+
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 2, \"description\": \"Pepperoni\", \"price\": 0.0042 }]}'  -H \"Authorization: Bearer $token\"")
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 2, \"description\": \"Pepperoni\", \"price\": 0.0042 }]}'  -H \"Authorization: Bearer $token\"")
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 2, \"description\": \"Pepperoni\", \"price\": 0.0042 }]}'  -H \"Authorization: Bearer $token\"")
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 2, \"description\": \"Pepperoni\", \"price\": 0.0042 }]}'  -H \"Authorization: Bearer $token\"")
+  echo "Bought 4 pepporoni..." $result
+  sleep 2
+
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 3, \"description\": \"Margarita\", \"price\": 0.0042 }]}'  -H \"Authorization: Bearer $token\"")
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 3, \"description\": \"Margarita\", \"price\": 0.0042 }]}'  -H \"Authorization: Bearer $token\"")
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 3, \"description\": \"Margarita\", \"price\": 0.0042 }]}'  -H \"Authorization: Bearer $token\"")
+  echo "Bought 3 margarita..." $result
+  sleep 2
+
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 4, \"description\": \"Crusty\", \"price\": 0.0028 }]}'  -H \"Authorization: Bearer $token\"")
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 4, \"description\": \"Crusty\", \"price\": 0.0028 }]}'  -H \"Authorization: Bearer $token\"")
+  echo "Bought 2 crusty..." $result
+  sleep 2
+
+  result=$(execute_curl "-X POST $host/api/order -H 'Content-Type: application/json' -d '{\"franchiseId\": 1, \"storeId\":1, \"items\":[{ \"menuId\": 5, \"description\": \"Charred Leopard\", \"price\": 0.0099 }]}'  -H \"Authorization: Bearer $token\"")
   echo "Bought a charred leopard..." $result
-  sleep 5
+  sleep 2
 
   result=$(execute_curl "-X DELETE $host/api/auth -H \"Authorization: Bearer $token\"")
   echo "Logging out diner..." $result
-  sleep 30
+  sleep 10
 done &
 pid4=$!
 
