@@ -5,9 +5,10 @@ const config = require('../config.js');
 const { asyncHandler } = require('../endpointHelper.js');
 const { DB, Role } = require('../database/database.js');
 const metrics = require('../metrics.js');
-//const logger = require('../logger.js');
+const logger = require('../logger.js');
 
 app.use(metrics.requestTracker);
+app.use(logger.httpLogger);
 
 const authRouter = express.Router();
 

@@ -7,10 +7,10 @@ const dbModel = require('./dbModel.js');
 const express = require('express');
 const app = express();
 const metrics = require('../metrics.js');
-//const logger = require('../logger.js');
+const logger = require('../logger.js');
 
 app.use(metrics.requestTracker);
-//app.use(logger.httpLogger);
+app.use(logger.httpLogger);
 
 class DB {
   constructor() {
