@@ -1,10 +1,11 @@
 const express = require('express');
+const app = express();
 const config = require('../config.js');
 const { Role, DB } = require('../database/database.js');
 const { authRouter } = require('./authRouter.js');
 const { asyncHandler, StatusCodeError } = require('../endpointHelper.js');
-const metrics = require('../metrics.js')
-const app = express();
+const metrics = require('../metrics.js');
+//const logger = require('../logger.js');
 
 app.use(metrics.requestTracker);
 

@@ -5,10 +5,12 @@ const { StatusCodeError } = require('../endpointHelper.js');
 const { Role } = require('../model/model.js');
 const dbModel = require('./dbModel.js');
 const express = require('express');
-const metrics = require('../metrics.js')
 const app = express();
+const metrics = require('../metrics.js');
+const logger = require('../logger.js');
 
 app.use(metrics.requestTracker);
+app.use(logger.httpLogger);
 
 class DB {
   constructor() {
@@ -354,7 +356,9 @@ class DB {
   }
 
   async query(connection, sql, params) {
+    //logger.log("SQL query", sql.type, params);
     const [results] = await connection.execute(sql, params);
+    //logger.log("SQL query", results.type, results);
     return results;
   }
 

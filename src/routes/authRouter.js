@@ -1,10 +1,11 @@
 const express = require('express');
+const app = express();
 const jwt = require('jsonwebtoken');
 const config = require('../config.js');
 const { asyncHandler } = require('../endpointHelper.js');
 const { DB, Role } = require('../database/database.js');
-const metrics = require('../metrics.js')
-const app = express();
+const metrics = require('../metrics.js');
+//const logger = require('../logger.js');
 
 app.use(metrics.requestTracker);
 
