@@ -106,7 +106,6 @@ function getMemoryUsagePercentage() {
 function requestTracker(req, res, next) {
   const endpoint = `[${req.method}] ${req.path}`;
   requests[endpoint] = (requests[endpoint] || 0) + 1;
-  logger.log("info", "http request", endpoint);
   next();
 }
 
