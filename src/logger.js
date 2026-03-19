@@ -1,10 +1,5 @@
 const config = require('./config');
 
-setInterval(() => {
-  log('test', 'test', 'test');
-  //console.log('log test');
-}, 5000);
-
 class Logger {
   httpLogger = (req, res, next) => {
     let send = res.send;
@@ -62,4 +57,5 @@ class Logger {
     });
   }
 }
+
 module.exports = new Logger();
