@@ -133,7 +133,6 @@ orderRouter.post(
     } else {
       const problem = { factoryResponse: j, status: r.status };
       console.log('Factory failed to fulfill order', problem);
-      //console.log('factory api key: ', config.factory.apiKey);
       metrics.orderFailed();
       res.status(500).send({ message: 'Failed to fulfill order at factory', followLinkToEndChaos: j.reportUrl });
     }
