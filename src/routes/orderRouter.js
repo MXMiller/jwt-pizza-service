@@ -127,7 +127,7 @@ orderRouter.post(
       metrics.calcOrderLatency(startTime, endTime);
       metrics.calcReqLatency(startTime, endTime);
 
-      // logger.httpLogger(req, res, this.next);
+      logger.httpLogger(req, res, this.next);
 
       metrics.requestTracker(req, res, this.next);
     } else {
