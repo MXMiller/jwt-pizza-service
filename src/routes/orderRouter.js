@@ -127,6 +127,8 @@ orderRouter.post(
       metrics.calcOrderLatency(startTime, endTime);
       metrics.calcReqLatency(startTime, endTime);
 
+      logger.log('log order test', 'order test', orderReq.body);
+
       metrics.requestTracker(req, res, this.next);
     } else {
       const problem = { factoryResponse: j, status: r.status };
