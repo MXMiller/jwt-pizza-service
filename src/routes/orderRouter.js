@@ -127,13 +127,13 @@ orderRouter.post(
       metrics.calcOrderLatency(startTime, endTime);
       metrics.calcReqLatency(startTime, endTime);
 
-      logger.httpLogger(req, res, this.next);
+      //logger.httpLogger(req, res, this.next);
 
       metrics.requestTracker(req, res, this.next);
     } else {
       const problem = { factoryResponse: j, status: r.status };
       console.log('Factory failed to fulfill order', problem);
-      console.log('factory api key: ', config.factory.apiKey);
+      //console.log('factory api key: ', config.factory.apiKey);
       metrics.orderFailed();
       res.status(500).send({ message: 'Failed to fulfill order at factory', followLinkToEndChaos: j.reportUrl });
     }
