@@ -1,6 +1,6 @@
 const app = require('./service.js');
 const metrics = require('./metrics');
-const logger = require('../logger.js');
+const logger = require('./logger.js');
 
 app.use(metrics.requestTracker);
 app.use(logger.httpLogger);
