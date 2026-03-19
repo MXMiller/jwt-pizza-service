@@ -181,14 +181,6 @@ function sendMetricToGrafana(metrics) {
   const body = {
     resourceMetrics: [
       {
-        /*resource: {
-          attributes: [
-            {
-              key: "service.name",
-              value: { stringValue: config.metrics.source }
-            }
-          ]
-        },*/
         scopeMetrics: [
           {
             scope: { name: "custom-metrics" },
