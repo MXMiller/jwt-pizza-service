@@ -1,6 +1,6 @@
 const config = require('./config');
 const os = require('os');
-const logger = require('../logger.js');
+const logger = require('./logger.js');
 
 // Metrics stored in memory
 const requests = {};
