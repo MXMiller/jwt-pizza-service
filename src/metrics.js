@@ -1,5 +1,6 @@
 const config = require('./config');
 const os = require('os');
+const logger = require('../logger.js');
 
 // Metrics stored in memory
 const requests = {};
@@ -106,6 +107,7 @@ function getMemoryUsagePercentage() {
 function requestTracker(req, res, next) {
   const endpoint = `[${req.method}] ${req.path}`;
   requests[endpoint] = (requests[endpoint] || 0) + 1;
+  logger.httpLogger(req, res, next);
   next();
 }
 
