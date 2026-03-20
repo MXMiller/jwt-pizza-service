@@ -74,7 +74,7 @@ franchiseRouter.get(
     metrics.calcReqLatency(startTime, endTime);
 
     metrics.requestTracker(req, res, this.next);
-    logger.httpLogger(req, res, this.next);
+    //logger.httpLogger(req, res, this.next);
   })
 );
 
@@ -97,7 +97,7 @@ franchiseRouter.get(
     metrics.calcReqLatency(startTime, endTime);
 
     metrics.requestTracker(req, res, this.next);
-    logger.httpLogger(req, res, this.next);
+    //logger.httpLogger(req, res, this.next);
   })
 );
 
@@ -119,7 +119,7 @@ franchiseRouter.post(
     metrics.calcReqLatency(startTime, endTime);
 
     metrics.requestTracker(req, res, this.next);
-    logger.httpLogger(req, res, this.next);
+    //logger.httpLogger(req, res, this.next);
   })
 );
 
@@ -137,7 +137,7 @@ franchiseRouter.delete(
     metrics.calcReqLatency(startTime, endTime);
 
     metrics.requestTracker(req, res, this.next);
-    logger.httpLogger(req, res, this.next);
+    //logger.httpLogger(req, res, this.next);
   })
 );
 
@@ -160,7 +160,7 @@ franchiseRouter.post(
     metrics.calcReqLatency(startTime, endTime);
 
     metrics.requestTracker(req, res, this.next);
-    logger.httpLogger(req, res, this.next);
+    //logger.httpLogger(req, res, this.next);
   })
 );
 
@@ -185,7 +185,7 @@ franchiseRouter.delete(
     metrics.calcReqLatency(startTime, endTime);
 
     metrics.requestTracker(req, res, this.next);
-    logger.httpLogger(req, res, this.next);
+    //logger.httpLogger(req, res, this.next);
   })
 );
 

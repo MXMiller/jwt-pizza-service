@@ -80,7 +80,7 @@ orderRouter.put(
     metrics.calcReqLatency(startTime, endTime);
 
     metrics.requestTracker(req, res, this.next);
-    logger.httpLogger(req, res, this.next);
+    //logger.httpLogger(req, res, this.next);
   })
 );
 
@@ -97,7 +97,7 @@ orderRouter.get(
     
     metrics.calcReqLatency(startTime, endTime);
 
-    logger.httpLogger(req, res, this.next);
+    //logger.httpLogger(req, res, this.next);
   })
 );
 
@@ -132,7 +132,7 @@ orderRouter.post(
       metrics.calcReqLatency(startTime, endTime);
 
       metrics.requestTracker(req, res, this.next);
-      logger.httpLogger(req, res, this.next);
+      //logger.httpLogger(req, res, this.next);
     } else {
       const problem = { factoryResponse: j, status: r.status };
       console.log('Factory failed to fulfill order', problem);

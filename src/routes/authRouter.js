@@ -85,7 +85,7 @@ authRouter.post(
     metrics.calcReqLatency(startTime, endTime);
     
     metrics.requestTracker(req, res, this.next);
-    logger.httpLogger(req, res, this.next);
+    //logger.httpLogger(req, res, this.next);
   })
 );
 
@@ -107,7 +107,7 @@ authRouter.put(
     metrics.calcReqLatency(startTime, endTime);
 
     metrics.requestTracker(req, res, this.next);
-    logger.httpLogger(req, res, this.next);
+    //logger.httpLogger(req, res, this.next);
   })
 );
 
@@ -127,7 +127,7 @@ authRouter.delete(
     metrics.calcReqLatency(startTime, endTime);
 
     metrics.requestTracker(req, res, this.next);
-    logger.httpLogger(req, res, this.next);
+    //logger.httpLogger(req, res, this.next);
   })
 );
 

@@ -66,7 +66,7 @@ userRouter.get(
 
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
-    logger.httpLogger(req, res, this.next);
+    ////logger.httpLogger(req, res, this.next);
   })
 );
 
@@ -82,7 +82,7 @@ userRouter.get(
 
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
-    logger.httpLogger(req, res, this.next);
+    //logger.httpLogger(req, res, this.next);
   })
 );
 
@@ -106,7 +106,7 @@ userRouter.put(
 
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
-    logger.httpLogger(req, res, this.next);
+    //logger.httpLogger(req, res, this.next);
   })
 );
 
@@ -123,7 +123,7 @@ userRouter.delete(
 
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
-    logger.httpLogger(req, res, this.next);
+    //logger.httpLogger(req, res, this.next);
   })
 );
 
