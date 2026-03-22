@@ -8,7 +8,6 @@ const metrics = require('../metrics.js');
 const logger = require('../logger.js');
 
 app.use(metrics.requestTracker);
-const logger = new Logger();
 app.use(logger.httpLogger);
 
 const orderRouter = express.Router();
