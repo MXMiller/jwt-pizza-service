@@ -11,9 +11,12 @@ class Logger {
 
       try {
         logger.log('info', 'http', {
+          authorized: !!req.headers.authorization,
           path: req.originalUrl,
           method: req.method,
           statusCode: res.statusCode,
+          statusMessage: res.statusMessage,
+          reqBody: JSON.stringify(req.body),
         });
       } catch (err) {
         console.log('Logging failed:', err.message);
