@@ -26,10 +26,8 @@ class Logger {
       path: req.originalUrl,
       method: req.method,
       statusCode: res.statusCode,
-      reqHeader: JSON.stringify(req.headers),
       reqBody: JSON.stringify(req.body),
-      resHeader: JSON.stringify(res.headers),
-      resBody: JSON.stringify(res.body),
+      resBody: JSON.stringify(res.json()),
     };
     this.log(this.statusToLogLevel(res.statusCode), 'http', logData);
   }
