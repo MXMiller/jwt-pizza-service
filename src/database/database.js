@@ -21,6 +21,7 @@ class DB {
     const connection = await this.getConnection();
     try {
       const rows = await this.query(connection, `SELECT * FROM menu`);
+      logger.log(200, 'http', rows);
       return rows;
     } finally {
       connection.end();
