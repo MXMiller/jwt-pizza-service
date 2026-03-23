@@ -2,35 +2,51 @@ const config = require('./config');
 
 class Logger {
   httpLogger = (req, res, next) => {
-    let send = res.send;
-    res.send = (resBody) => {
+    const chunks = [];
+
+    const originalWrite = res.write;
+    const originalEnd = res.end;
+
+    // Capture response stream
+    res.write = function (chunk, ...args) {
+      chunks.push(Buffer.from(chunk));
+      return originalWrite.apply(this, [chunk, ...args]);
+    };
+
+    res.end = function (chunk, ...args) {
+      if (chunk) {
+        chunks.push(Buffer.from(chunk));
+      }
+
+      const body = Buffer.concat(chunks).toString('utf8');
+      res.locals.responseBody = body;
+
+      return originalEnd.apply(this, [chunk, ...args]);
+    };
+
+    // Log AFTER response is fully sent
+    res.on('finish', () => {
       const logData = {
         authorized: !!req.headers.authorization,
         path: req.originalUrl,
         method: req.method,
         statusCode: res.statusCode,
-        reqBody: JSON.stringify(req.body),
-        resBody: JSON.stringify(resBody),
-      };
-      const level = this.statusToLogLevel(res.statusCode);
-      this.log(level, 'http', logData);
-      res.send = send;
-      return res.send(resBody);
-    };
-    next();
-  };
+        reqBody: this.safeJson(req.body),
+        resBody: this.safeJson(res.locals.responseBody),
+     };
 
-  httpLogHelper(/*req, res*/){
-    /*const logData = {
-      authorized: !!req.headers.authorization,
-      path: req.originalUrl,
-      method: req.method,
-      statusMessage: res.statusMessage,
-      statusCode: res.statusCode,
-      reqBody: JSON.stringify(req.body),
-      resBody: JSON.stringify(res.json()),
-    };
-    this.log(this.statusToLogLevel(res.statusCode), 'http', logData);*/
+      this.log(this.statusToLogLevel(res.statusCode), 'http', logData);
+    });
+
+    next();
+  }
+
+  safeJson(data) {
+    try {
+      return JSON.stringify(data);
+    } catch {
+      return '"[unserializable]"';
+    }
   }
 
   sqlLogHelper(query){
