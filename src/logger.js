@@ -2,27 +2,23 @@ const config = require('./config');
 
 class Logger {
   httpLogger = (req, res, next) => {
-    const logger = this;
-
-    console.log('LOGGER HIT:', req.method, req.originalUrl);
-
-    res.on('finish', () => {
-      console.log('LOGGER FINISH:', res.statusCode);
-
-      try {
-        logger.log('info', 'http', {
-          authorized: !!req.headers.authorization,
-          path: req.originalUrl,
-          method: req.method,
-          statusCode: res.statusCode,
-          statusMessage: res.statusMessage,
-          reqBody: JSON.stringify(req.body),
-        });
-      } catch (err) {
-        console.log('Logging failed:', err.message);
-      }
-    });
-
+    console.log("in httpLogger middleware");
+    let send = res.send;
+    res.send = (resBody) => {
+      const logData = {
+        authorized: !!req.headers.authorization,
+        path: req.originalUrl,
+        method: req.method,
+        statusCode: res.statusCode,
+        statusMessage: res.statusMessage,
+        reqBody: JSON.stringify(req.body),
+        resBody: JSON.stringify(resBody),
+      };
+      const level = this.statusToLogLevel(res.statusCode);
+      this.log(level, 'http logger middleware', logData);
+      res.send = send;
+      return res.send(resBody);
+    };
     next();
   }
 
