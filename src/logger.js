@@ -23,7 +23,7 @@ class Logger {
   }
 
   sqlLogHelper(query){
-    this.log('info', 'db', { sqlQuery: query });
+    this.log('info', 'db', { reqBody: query });
   }
 
   factoryLogHelper(res){
