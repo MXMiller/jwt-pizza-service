@@ -2,45 +2,21 @@ const config = require('./config');
 
 class Logger {
   httpLogger = (req, res, next) => {
-    const chunks = [];
-
-    const originalWrite = res.write;
-    const originalEnd = res.end;
-
-    res.write = function (chunk, ...args) {
-      chunks.push(Buffer.from(chunk));
-      return originalWrite.apply(this, [chunk, ...args]);
-    };
-
-    res.end = function (chunk, ...args) {
-      if (chunk) chunks.push(Buffer.from(chunk));
-
-      const rawBody = Buffer.concat(chunks).toString('utf8');
-
-      res.locals.responseBody = rawBody;
-      return originalEnd.apply(this, [chunk, ...args]);
-    };
-
-    res.on('finish', () => {
-      const level = this.statusToLogLevel(res.statusCode);
-
+    let send = res.send;
+    res.send = (resBody) => {
       const logData = {
         authorized: !!req.headers.authorization,
         path: req.originalUrl,
         method: req.method,
         statusCode: res.statusCode,
         reqBody: JSON.stringify(req.body),
-        resBody: JSON.stringify(res.locals.responseBody),
+        resBody: JSON.stringify(resBody),
       };
-
+      const level = this.statusToLogLevel(res.statusCode);
       this.log(level, 'http', logData);
-
-      // 👇 optional: also print locally so you KNOW it's firing
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`[HTTP ${level}]`, logData.path, res.statusCode);
-      }
-    });
-
+      res.send = send;
+      return res.send(resBody);
+    };
     next();
   }
 
