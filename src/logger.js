@@ -38,7 +38,7 @@ class Logger {
   }
 
   factoryLogHelper(res){
-    this.log('info', 'factory', { statusCode: res.statusCode, statusMessage: res.statusMessage, resBody: JSON.stringify(res.json()) });
+    this.log('info', 'factory', { statusCode: res.statusCode, statusMessage: res.statusMessage, resBody: res.json() });
   }
 
   log(level, type, logData) {
