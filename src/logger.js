@@ -29,7 +29,7 @@ class Logger {
       reqBody: JSON.stringify(req.body),
       resBody: JSON.stringify(res.body),
     };
-    log(logger.statusToLogLevel(res.statusCode), 'http', logData);
+    this.log(this.statusToLogLevel(res.statusCode), 'http', logData);
   }
 
   log(level, type, logData) {
