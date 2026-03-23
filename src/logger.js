@@ -22,22 +22,16 @@ class Logger {
   };
 
   httpLogHelper(req, res){
-    let send = res.send;
-    res.send = (resBody) => {
-      const logData = {
-        authorized: !!req.headers.authorization,
-        path: req.originalUrl,
-        method: req.method,
-        statusMessage: res.statusMessage,
-        statusCode: res.statusCode,
-        reqBody: JSON.stringify(req.body),
-        resBody: JSON.stringify(resBody),
-      };
-      const level = this.statusToLogLevel(res.statusCode);
-      this.log(level, 'http', logData);
-      res.send = send;
-      return res.send(resBody);
+    const logData = {
+      authorized: !!req.headers.authorization,
+      path: req.originalUrl,
+      method: req.method,
+      statusMessage: res.statusMessage,
+      statusCode: res.statusCode,
+      reqBody: JSON.stringify(req.body),
+      resBody: JSON.stringify(res.json()),
     };
+    this.log(this.statusToLogLevel(res.statusCode), 'http', logData);
   }
 
   sqlLogHelper(query){
