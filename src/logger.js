@@ -33,13 +33,13 @@ class Logger {
     this.log(this.statusToLogLevel(res.statusCode), 'http', logData);
   }
 
-  sqlLogHelper(query, results){
+  sqlLogHelper(sql, query, results){
     const logData = {
       sql: sql,
       query: query,
       results: results,
     };
-    this.log(this.statusToLogLevel(res.statusCode), 'sql', logData);
+    this.log('sql', logData);
   }
 
   log(level, type, logData) {
