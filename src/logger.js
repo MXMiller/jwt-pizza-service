@@ -41,6 +41,10 @@ class Logger {
       }
     });
 
+    res.on('finish', () => {
+      console.log('HTTP LOGGER FIRED', req.method, req.originalUrl, res.statusCode);
+    });
+
     next();
   }
 
