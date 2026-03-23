@@ -20,6 +20,18 @@ class Logger {
     next();
   };
 
+  logHelper(req, res){
+    const logData = {
+      authorized: !!req.headers.authorization,
+      path: req.originalUrl,
+      method: req.method,
+      statusCode: res.statusCode,
+      reqBody: JSON.stringify(req.body),
+      resBody: JSON.stringify(res.body),
+    };
+    log(logger.statusToLogLevel(res.statusCode), 'http', logData);
+  }
+
   log(level, type, logData) {
     const labels = { component: config.logging.source, level: level, type: type };
     const values = [this.nowString(), this.sanitize(logData)];
