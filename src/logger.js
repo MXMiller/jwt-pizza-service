@@ -23,6 +23,7 @@ class Logger {
   };
   
   httpLogHelper(req, res){//this works
+    console.log("in httpLogHelper");
     const logData = {
       authorized: !!req.headers.authorization,
       path: req.originalUrl,
