@@ -21,7 +21,7 @@ class Logger {
   };
 
   httpLogHelper(req, res){
-    const logData = {
+    /*const logData = {
       authorized: !!req.headers.authorization,
       path: req.originalUrl,
       method: req.method,
@@ -30,7 +30,7 @@ class Logger {
       reqBody: JSON.stringify(req.body),
       resBody: JSON.stringify(res.json()),
     };
-    this.log(this.statusToLogLevel(res.statusCode), 'http', logData);
+    this.log(this.statusToLogLevel(res.statusCode), 'http', logData);*/
   }
 
   sqlLogHelper(query){
