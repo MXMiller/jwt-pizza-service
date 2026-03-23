@@ -9,8 +9,8 @@ class Logger {
         authorized: !!req.headers.authorization,
         path: req.originalUrl,
         method: req.method,
-        statusMessage: res.statusMessage,
         statusCode: res.statusCode,
+        statusMessage: res.statusMessage,
         reqBody: JSON.stringify(req.body),
         resBody: JSON.stringify(resBody),
       };
@@ -22,20 +22,6 @@ class Logger {
     next();
   };
   
-  httpLogHelper(req, res){//this works
-    console.log("in httpLogHelper");
-    const logData = {
-      authorized: !!req.headers.authorization,
-      path: req.originalUrl,
-      method: req.method,
-      statusMessage: res.statusMessage,
-      statusCode: res.statusCode,
-      reqBody: JSON.stringify(req.body),
-      //resBody: JSON.stringify(res.locals.responseBody),
-    };
-    this.log(this.statusToLogLevel(res.statusCode), 'http', logData);
-  }
-
   sqlLogHelper(query){
     this.log('info', 'db', { sqlQuery: query });
   }
