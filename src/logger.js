@@ -2,24 +2,52 @@ const config = require('./config');
 
 class Logger {
   httpLogger = (req, res, next) => {
-    const logger = this;
+    const chunks = [];
 
-    res.on('finish', () => {
-      try {
-        const logData = {
-          path: req.originalUrl,
-          method: req.method,
-          statusCode: res.statusCode,
-        };
+    const originalWrite = res.write;
+    const originalEnd = res.end;
 
-        logger.log( logger.statusToLogLevel(res.statusCode), 'http', logData );
-      } catch (err) {
-        console.log('Logging failed (ignored):', err.message);
+    // Capture response stream
+    res.write = function (chunk, ...args) {
+      chunks.push(Buffer.from(chunk));
+      return originalWrite.apply(this, [chunk, ...args]);
+    };
+
+    res.end = function (chunk, ...args) {
+      if (chunk) {
+        chunks.push(Buffer.from(chunk));
       }
+
+      const body = Buffer.concat(chunks).toString('utf8');
+      res.locals.responseBody = body;
+
+      return originalEnd.apply(this, [chunk, ...args]);
+    };
+
+    // Log AFTER response is fully sent
+    res.on('finish', () => {
+      const logData = {
+        authorized: !!req.headers.authorization,
+        path: req.originalUrl,
+        method: req.method,
+        statusCode: res.statusCode,
+        reqBody: this.safeJson(req.body),
+        resBody: this.safeJson(res.locals.responseBody),
+     };
+
+      this.log(this.statusToLogLevel(res.statusCode), 'http', logData);
     });
 
     next();
   }
+
+  safeJson(data) {
+    try {
+      return JSON.stringify(data);
+    } catch {
+      return '"[unserializable]"';
+    }
+  }  
 
   sqlLogHelper(query){
     this.log('info', 'db', { sqlQuery: query });
