@@ -2,12 +2,14 @@ const config = require('./config');
 
 class Logger {
   httpLogger = (req, res, next) => {
+    console.log("in httpLogger middleware");
     let send = res.send;
     res.send = (resBody) => {
       const logData = {
         authorized: !!req.headers.authorization,
         path: req.originalUrl,
         method: req.method,
+        statusMessage: res.statusMessage,
         statusCode: res.statusCode,
         reqBody: JSON.stringify(req.body),
         resBody: JSON.stringify(resBody),
