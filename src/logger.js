@@ -8,7 +8,6 @@ class Logger {
         authorized: !!req.headers.authorization,
         path: req.originalUrl,
         method: req.method,
-        statusMessage: res.statusMessage,
         statusCode: res.statusCode,
         reqBody: JSON.stringify(req.body),
         resBody: JSON.stringify(res.body),
