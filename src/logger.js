@@ -12,11 +12,7 @@ class Logger {
           statusCode: res.statusCode,
         };
 
-        logger.log(
-          logger.statusToLogLevel(res.statusCode),
-          'http',
-          logData
-        );
+        logger.log( logger.statusToLogLevel(res.statusCode), 'http', logData );
       } catch (err) {
         console.log('Logging failed (ignored):', err.message);
       }
