@@ -26,8 +26,8 @@ class Logger {
     this.log('info', 'db', { reqBody: query });
   }
 
-  factoryLogHelper(res){
-    this.log('info', 'factory', { statusCode: res.statusCode, statusMessage: res.statusMessage });
+  errLogHelper(err){
+    this.log('error', 'error', { error: err });
   }
 
   log(level, type, logData) {
