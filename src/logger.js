@@ -33,6 +33,15 @@ class Logger {
     this.log(this.statusToLogLevel(res.statusCode), 'http', logData);
   }
 
+  sqlLogHelper(query, results){
+    const logData = {
+      sql: sql,
+      query: query,
+      results: results,
+    };
+    this.log(this.statusToLogLevel(res.statusCode), 'sql', logData);
+  }
+
   log(level, type, logData) {
     const labels = { component: config.logging.source, level: level, type: type };
     const values = [this.nowString(), this.sanitize(logData)];
