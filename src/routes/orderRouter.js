@@ -8,7 +8,7 @@ const metrics = require('../metrics.js');
 const logger = require('../logger.js');
 
 app.use(metrics.requestTracker);
-app.use(logger.httpLogger);
+//app.use(logger.httpLogger);
 
 const orderRouter = express.Router();
 
@@ -57,7 +57,7 @@ orderRouter.get(
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
     
-    //logger.httpLogHelper(req, res);
+    logger.httpLogHelper(req, res);
     metrics.requestTracker(req, res, this.next);
   })
 );
@@ -80,7 +80,7 @@ orderRouter.put(
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
 
-    //logger.httpLogHelper(req, res);
+    logger.httpLogHelper(req, res);
     metrics.requestTracker(req, res, this.next);
   })
 );
@@ -98,7 +98,7 @@ orderRouter.get(
     
     metrics.calcReqLatency(startTime, endTime);
 
-    //logger.httpLogHelper(req, res);
+    logger.httpLogHelper(req, res);
     metrics.requestTracker(req, res, this.next);
   })
 );
@@ -139,7 +139,7 @@ orderRouter.post(
       const problem = { factoryResponse: j, status: r.status };
       console.log('Factory failed to fulfill order', problem);
       metrics.orderFailed();
-      //logger.httpLogHelper(req, res);
+      logger.httpLogHelper(req, res);
       res.status(500).send({ message: 'Failed to fulfill order at factory', followLinkToEndChaos: j.reportUrl });
     }
   }),
