@@ -37,6 +37,10 @@ class Logger {
     this.log('info', 'db', { sqlQuery: query });
   }
 
+  factoryLogHelper(res){
+    this.log('info', 'factory', { statusCode: res.statusCode, statusMessage: res.statusMessage, resJson: res.json() });
+  }
+
   log(level, type, logData) {
     const labels = { component: config.logging.source, level: level, type: type };
     const values = [this.nowString(), this.sanitize(logData)];
