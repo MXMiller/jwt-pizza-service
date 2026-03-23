@@ -34,7 +34,7 @@ class Logger {
   }
 
   sqlLogHelper(query){
-    this.log('sql', { sqlQuery: query });
+    this.log('db', { sqlQuery: query });
   }
 
   log(level, type, logData) {
