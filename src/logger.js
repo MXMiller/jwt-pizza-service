@@ -40,7 +40,7 @@ class Logger {
   }
 
   factoryLogHelper(res){
-    this.log('info', 'factory', { statusCode: res.statusCode, statusMessage: res.statusMessage, resJson: res.json() });
+    this.log('info', 'factory', { statusCode: res.statusCode, statusMessage: res.statusMessage });
   }
 
   log(level, type, logData) {
