@@ -7,6 +7,8 @@ const version = require('./version.json');
 const config = require('./config.js');
 const logger = require('./logger.js');
 
+app.use(logger.httpLogger);
+
 const app = express();
 app.use(express.json());
 app.use(setAuthUser);
