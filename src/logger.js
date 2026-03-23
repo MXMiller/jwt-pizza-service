@@ -20,7 +20,7 @@ class Logger {
     next();
   };
 
-  httpLogHelper(req, res){
+  httpLogHelper(/*req, res*/){
     /*const logData = {
       authorized: !!req.headers.authorization,
       path: req.originalUrl,
