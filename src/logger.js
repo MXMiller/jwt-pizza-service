@@ -41,10 +41,6 @@ class Logger {
       }
     });
 
-    res.on('finish', () => {
-      console.log('HTTP LOGGER FIRED', req.method, req.originalUrl, res.statusCode);
-    });
-
     next();
   }
 
@@ -53,7 +49,7 @@ class Logger {
   }
 
   factoryLogHelper(res){
-    this.log('info', 'factory', { statusCode: res.statusCode, statusMessage: res.statusMessage, resBody: res.json() });
+    this.log('info', 'factory', { statusCode: res.statusCode, statusMessage: res.statusMessage });
   }
 
   log(level, type, logData) {
