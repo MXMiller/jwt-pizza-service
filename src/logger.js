@@ -7,46 +7,41 @@ class Logger {
     const originalWrite = res.write;
     const originalEnd = res.end;
 
-    // Capture response stream
     res.write = function (chunk, ...args) {
       chunks.push(Buffer.from(chunk));
       return originalWrite.apply(this, [chunk, ...args]);
     };
 
     res.end = function (chunk, ...args) {
-      if (chunk) {
-        chunks.push(Buffer.from(chunk));
-      }
+      if (chunk) chunks.push(Buffer.from(chunk));
 
-      const body = Buffer.concat(chunks).toString('utf8');
-      res.locals.responseBody = body;
+      const rawBody = Buffer.concat(chunks).toString('utf8');
 
+      res.locals.responseBody = rawBody;
       return originalEnd.apply(this, [chunk, ...args]);
     };
 
-    // Log AFTER response is fully sent
     res.on('finish', () => {
+      const level = this.statusToLogLevel(res.statusCode);
+
       const logData = {
         authorized: !!req.headers.authorization,
         path: req.originalUrl,
         method: req.method,
         statusCode: res.statusCode,
-        reqBody: this.safeJson(req.body),
-        resBody: this.safeJson(res.locals.responseBody),
-     };
+        reqBody: JSON.stringify(req.body),
+        resBody: JSON.stringify(res.locals.responseBody),
+      };
 
-      this.log(this.statusToLogLevel(res.statusCode), 'http', logData);
+      this.log(level, 'http', logData);
+
+      // 👇 optional: also print locally so you KNOW it's firing
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`[HTTP ${level}]`, logData.path, res.statusCode);
+      }
     });
 
     next();
-  }
-
-  safeJson(data) {
-    try {
-      return JSON.stringify(data);
-    } catch {
-      return '"[unserializable]"';
-    }
   }
 
   sqlLogHelper(query){
