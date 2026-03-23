@@ -21,6 +21,7 @@ class DB {
     const connection = await this.getConnection();
     try {
       const rows = await this.query(connection, `SELECT * FROM menu`);
+      logger.sqlLogHelper(`SELECT * FROM menu`, rows);
       return rows;
     } finally {
       connection.end();
@@ -357,7 +358,6 @@ class DB {
 
   async query(connection, sql, params) {
     const [results] = await connection.execute(sql, params);
-    //logger.sqlLogHelper("SQL query", sql, params, results);
     return results;
   }
 
