@@ -70,7 +70,9 @@ class DB {
       const user = userResult[0];
       if (!user || (password && !(await bcrypt.compare(password, user.password)))) {
         metrics.authFailed();
-        throw new StatusCodeError('unknown user', 404);
+        const err = new StatusCodeError('unknown user', 404);
+        logger.errLogHelper(err);
+        throw err;
       }
 
       const roleResult = await this.query(connection, `SELECT * FROM userRole WHERE userId=?`, [user.id]);
@@ -227,7 +229,9 @@ class DB {
         const adminUser = await this.query(connection, `SELECT id, name FROM user WHERE email=?`, [admin.email]);
         if (adminUser.length == 0) {
           metrics.authFailed();
-          throw new StatusCodeError(`unknown user for franchise admin ${admin.email} provided`, 404);
+          const err = new StatusCodeError(`unknown user for franchise admin ${admin.email} provided`, 404);
+          logger.errLogHelper(err);
+          throw err;
         }
         admin.id = adminUser[0].id;
         admin.name = adminUser[0].name;
@@ -257,7 +261,9 @@ class DB {
         await connection.commit();
       } catch {
         await connection.rollback();
-        throw new StatusCodeError('unable to delete franchise', 500);
+        let err = new StatusCodeError('unable to delete franchise', 500);
+        logger.errLogHelper(err);
+        throw err;
       }
     } finally {
       connection.end();
@@ -366,7 +372,9 @@ class DB {
     if (rows.length > 0) {
       return rows[0].id;
     }
-    throw new Error('No ID found');
+    const err = new Error('No ID found');
+    logger.errLogHelper(err);
+    throw err;
   }
 
   async getConnection() {
@@ -415,6 +423,7 @@ class DB {
         connection.end();
       }
     } catch (err) {
+      logger.errLogHelper(err);
       console.error(JSON.stringify({ message: 'Error initializing database', exception: err.message, connection: config.db.connection }));
     }
   }
