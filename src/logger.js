@@ -27,7 +27,7 @@ class Logger {
   }
 
   errLogHelper(errCode, message){
-    this.log('error', 'error', { message: message, statusCode: errCode });
+    this.log('error', 'error', { statusCode: errCode, res: message });
   }
 
   log(level, type, logData) {
