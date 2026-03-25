@@ -26,8 +26,8 @@ class Logger {
     this.log('info', 'db', { reqBody: query });
   }
 
-  errLogHelper(errCode, message){
-    this.log('error', 'error', { statusCode: errCode, res: message });
+  errLogHelper(err){
+    this.log('error', 'error', { errorCode: err.statusCode, errorMassage: err.message });
   }
 
   log(level, type, logData) {
