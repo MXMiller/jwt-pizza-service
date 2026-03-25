@@ -26,9 +26,9 @@ class Logger {
     this.log('info', 'db', { reqBody: query });
   }
 
-  /*errLogHelper(errCode, message){
-    this.log('error', 'error', { statusCode: errCode, message: message });
-  }*/
+  errLogHelper(errCode, message){
+    this.log('error', 'error', { message: message, statusCode: errCode });
+  }
 
   log(level, type, logData) {
     const labels = { component: config.logging.source, level: level, type: type };
