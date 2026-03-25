@@ -419,7 +419,7 @@ class DB {
         connection.end();
       }
     } catch (err) {
-      logger.errLogHelper(500, 'Error initializing database');
+      //logger.errLogHelper(500, 'Error initializing database');
       console.error(JSON.stringify({ message: 'Error initializing database', exception: err.message, connection: config.db.connection }));
     }
   }
