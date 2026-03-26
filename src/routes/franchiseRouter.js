@@ -1,12 +1,12 @@
 const express = require('express');
-const app = express();
+//const app = express();
 const { DB, Role } = require('../database/database.js');
 const { authRouter } = require('./authRouter.js');
 const { StatusCodeError, asyncHandler } = require('../endpointHelper.js');
 const metrics = require('../metrics.js');
 //const logger = require('../logger.js');
 
-app.use(metrics.requestTracker);
+//app.use(metrics.requestTracker);
 //app.use(logger.httpLogger);
 
 const franchiseRouter = express.Router();
@@ -73,7 +73,7 @@ franchiseRouter.get(
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
 
-    metrics.requestTracker(req, res, this.next);
+    //metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -95,7 +95,7 @@ franchiseRouter.get(
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
 
-    metrics.requestTracker(req, res, this.next);
+    //metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -116,7 +116,7 @@ franchiseRouter.post(
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
 
-    metrics.requestTracker(req, res, this.next);
+    //metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -133,7 +133,7 @@ franchiseRouter.delete(
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
 
-    metrics.requestTracker(req, res, this.next);
+    //metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -155,7 +155,7 @@ franchiseRouter.post(
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
 
-    metrics.requestTracker(req, res, this.next);
+    //metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -179,7 +179,7 @@ franchiseRouter.delete(
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
 
-    metrics.requestTracker(req, res, this.next);
+    //metrics.requestTracker(req, res, this.next);
   })
 );
 

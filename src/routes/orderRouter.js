@@ -1,5 +1,5 @@
 const express = require('express');
-const app = express();
+//const app = express();
 const config = require('../config.js');
 const { Role, DB } = require('../database/database.js');
 const { authRouter } = require('./authRouter.js');
@@ -7,7 +7,7 @@ const { asyncHandler, StatusCodeError } = require('../endpointHelper.js');
 const metrics = require('../metrics.js');
 //const logger = require('../logger.js');
 
-app.use(metrics.requestTracker);
+//app.use(metrics.requestTracker);
 //app.use(logger.httpLogger);
 
 const orderRouter = express.Router();
@@ -57,7 +57,7 @@ orderRouter.get(
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
     
-    metrics.requestTracker(req, res, this.next);
+    //metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -79,7 +79,7 @@ orderRouter.put(
     let endTime = Date.now();
     metrics.calcReqLatency(startTime, endTime);
 
-    metrics.requestTracker(req, res, this.next);
+    //metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -96,7 +96,7 @@ orderRouter.get(
     
     metrics.calcReqLatency(startTime, endTime);
 
-    metrics.requestTracker(req, res, this.next);
+    //metrics.requestTracker(req, res, this.next);
   })
 );
 
@@ -130,7 +130,7 @@ orderRouter.post(
       metrics.calcOrderLatency(startTime, endTime);
       metrics.calcReqLatency(startTime, endTime);
 
-      metrics.requestTracker(req, res, this.next);
+      //metrics.requestTracker(req, res, this.next);
     } else {
       const problem = { factoryResponse: j, status: r.status };
       console.log('Factory failed to fulfill order', problem);
