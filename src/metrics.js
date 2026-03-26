@@ -22,7 +22,9 @@ function userLoggedIn() {
 
 function userLoggedOut() {
   logoutCount++;
-  loggedInUserCount--;
+  if (loggedInUserCount > 0){
+    loggedInUserCount--;
+  }
 }
 
 let authSuccessCount = 0;
