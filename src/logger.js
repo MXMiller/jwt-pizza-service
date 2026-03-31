@@ -50,10 +50,7 @@ class Logger {
 
   sanitize(logData) {
     logData = JSON.stringify(logData);
-    return logData.replace(
-      /\\"(password|jwt|token)\\":\s*\\"[^"]*\\"/g,
-      '\\"$1\\": \\"*****\\"'
-    );
+    return logData.replace(/\\"(password|jwt|token)\\":\s*\\"[^"]*\\"/g, '\\"$1\\": \\"*****\\"');
   }
 
   sendLogToGrafana(event) {
