@@ -30,8 +30,8 @@ class Logger {
     this.log('error', 'error', { statusCode: err.statusCode ?? 500, resBody: err.message ?? 'error' });
   }
 
-  factoryLogHelper(){
-    
+  factoryLogHelper(fReqUrl, fReqBody, fRes){
+    this.log('info', 'factory', { reqBody: {fReqUrl, fReqBody}, resBody: fRes });
   }
 
   log(level, type, logData) {
