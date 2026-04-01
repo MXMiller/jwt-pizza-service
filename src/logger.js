@@ -31,7 +31,7 @@ class Logger {
   }
 
   factoryLogHelper(fReqUrl, fReqBody, fRes){
-    this.log('info', 'factory', { reqBody: {fReqUrl, fReqBody}, resBody: fRes });
+    this.log('info', 'factory', { path: fReqUrl, reqBody: fReqBody, resBody: fRes });
   }
 
   log(level, type, logData) {
