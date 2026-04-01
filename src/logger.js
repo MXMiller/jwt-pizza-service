@@ -54,14 +54,10 @@ class Logger {
 
   sanitize(logData) {
     logData = JSON.stringify(logData);
-    while (true) {
-      const before = logData;
-      logData = logData.replace(/\\"password\\":\s*\\"[^"]*\\"/g, '\\"password\\": \\"*****\\"'); 
-      logData = logData.replace(/\\"jwt\\":\s*\\"[^"]*\\"/g, '\\"jwt\\": \\"*****\\"'); 
-      logData = logData.replace(/\\"token\\":\s*\\"[^"]*\\"/g, '\\"token\\": \\"*****\\"'); 
-      logData = logData.replace(/\\"authorization\\":\s*\\"[^"]*\\"/g, '\\"token\\": \\"*****\\"'); 
-      if (before === logData) break;
-    }
+    logData = logData.replace(/\\"password\\":\s*\\"[^"]*\\"/g, '\\"password\\": \\"*****\\"'); 
+    logData = logData.replace(/\\"jwt\\":\s*\\"[^"]*\\"/g, '\\"jwt\\": \\"*****\\"'); 
+    logData = logData.replace(/\\"token\\":\s*\\"[^"]*\\"/g, '\\"token\\": \\"*****\\"'); 
+    logData = logData.replace(/\\"authorization\\":\s*\\"[^"]*\\"/g, '\\"authorization\\": \\"*****\\"'); 
     return logData;
   }
 
