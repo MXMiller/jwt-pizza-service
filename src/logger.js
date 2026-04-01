@@ -30,6 +30,10 @@ class Logger {
     this.log('error', 'error', { statusCode: err.statusCode ?? 500, resBody: err.message ?? 'error' });
   }
 
+  factoryLogHelper(){
+    
+  }
+
   log(level, type, logData) {
     const labels = { component: config.logging.source, level: level, type: type };
     const values = [this.nowString(), this.sanitize(logData)];
@@ -50,7 +54,10 @@ class Logger {
 
   sanitize(logData) {
     logData = JSON.stringify(logData);
-    return logData.replace(/\\"(password|jwt|token)\\":\s*\\"[^"]*\\"/g, '\\"$1\\": \\"*****\\"');
+    logData = logData.replace(/\\"password\\":\s*\\"[^"]*\\"/g, '\\"password\\": \\"*****\\"'); 
+    logData = logData.replace(/\\"jwt\\":\s*\\"[^"]*\\"/g, '\\"jwt\\": \\"*****\\"'); 
+    logData = logData.replace(/\\"token\\":\s*\\"[^"]*\\"/g, '\\"token\\": \\"*****\\"'); 
+    return logData;
   }
 
   sendLogToGrafana(event) {
