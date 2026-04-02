@@ -60,12 +60,15 @@ class Logger {
   }
 
   sanitize(logData) {
-    const str = JSON.stringify(logData);
-    return str
-      .replace(/"password":\s*"[^"]*"/g, '"password":"*****"')
-      .replace(/"jwt":\s*"[^"]*"/g, '"jwt":"*****"')
-      .replace(/"token":\s*"[^"]*"/g, '"token":"*****"')
-      .replace(/"authorization":\s*"[^"]*"/g, '"authorization":"*****"');
+    logData = JSON.stringify(logData);
+    return logData.replace(/\\"password\\":\s*\\"[^"]*\\"/g, '\\"password\\": \\"*****\\"')
+    .replace(/"password":\s*"[^"]*"/g, '"password":"*****"')
+    .replace(/\\"jwt\\":\s*\\"[^"]*\\"/g, '\\"jwt\\": \\"*****\\"')
+    .replace(/"jwt":\s*"[^"]*"/g, '"jwt":"*****"')
+    .replace(/\\"token\\":\s*\\"[^"]*\\"/g, '\\"token\\": \\"*****\\"')
+    .replace(/"token":\s*"[^"]*"/g, '"token":"*****"')
+    .replace(/\\"authorization\\":\s*\\"[^"]*\\"/g, '\\"authorization\\": \\"*****\\"')
+    .replace(/"authorization":\s*"[^"]*"/g, '"authorization":"*****"');
   }
 
   sendLogToGrafana(event) {
