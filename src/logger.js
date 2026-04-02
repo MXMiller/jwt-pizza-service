@@ -35,7 +35,7 @@ class Logger {
       authorized: !!fReqBody.headers.authorization,
       path: fReqUrl,
       method: fReqBody.method,
-      statusCode: fReqBody.statusCode,
+      statusCode: fRes.statusCode,
       reqBody: fReqBody, 
       resBody: fRes 
     });
