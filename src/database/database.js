@@ -206,8 +206,7 @@ class DB {
         const realItem = await this.query(connection, `SELECT * FROM menu WHERE id=?`, [item.menuId]);
         console.log("checking item", item, "against real item", realItem[0]);
         if(item.description != realItem[0].title || item.price != realItem[0].price){
-          let err = new StatusCodeError(`server response menu item ${item.menuId} does not match actual menu item. 
-            \nOrder item: ${item.description}, ${item.price} \nactual item: ${realItem[0].title}, ${realItem[0].price} \n`, 400);
+          let err = new StatusCodeError(`Request order item ${item.menuId} does not match response menu item.`, 400);
           logger.errLogHelper(err);
           throw err;
         }
