@@ -143,7 +143,7 @@ setInterval(() => {
   metrics.push(createMetric('crustyCount', crustyCount, '1', 'sum', 'asDouble', {}));
   metrics.push(createMetric('charredLeopardCount', charredLeopardCount, '1', 'sum', 'asDouble', {}));
 
-  console.log('sending new metrics')
+  //console.log('sending new metrics')
   sendMetricToGrafana(metrics);
 }, 1000);
 
