@@ -199,9 +199,24 @@ class DB {
   async addDinerOrder(user, order) {
     const connection = await this.getConnection();
     try {
+      //check franchise/store ids
+      const franchiseCheckResult = await this.query(connection, `SELECT FROM franchise WHERE id=?`, [order.franchiseId]);
+      if (franchiseCheckResult.length == 0) {
+        let err = new StatusCodeError('that franchise doesn\'t exist', 400);
+        logger.errLogHelper(err);
+        throw err;
+      }
+      const storeCheckResult = await this.query(connection, `SELECT FROM store WHERE id=? AND franchiseId=?`, [order.storeId, order.franchiseId]);
+      if (storeCheckResult.length == 0) {
+        let err = new StatusCodeError('that store doesn\'t exist for the given franchise', 400);
+        logger.errLogHelper(err);
+        throw err;
+      }
+
       const orderResult = await this.query(connection, `INSERT INTO dinerOrder (dinerId, franchiseId, storeId, date) VALUES (?, ?, ?, now())`, [user.id, order.franchiseId, order.storeId]);
       const orderId = orderResult.insertId;
 
+      //check items
       for (const item of order.items) {
         const realItem = await this.query(connection, `SELECT * FROM menu WHERE id=?`, [item.menuId]);
         console.log("checking item", item, "against real item", realItem[0]);
