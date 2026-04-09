@@ -201,6 +201,14 @@ class DB {
       const orderResult = await this.query(connection, `INSERT INTO dinerOrder (dinerId, franchiseId, storeId, date) VALUES (?, ?, ?, now())`, [user.id, order.franchiseId, order.storeId]);
       const orderId = orderResult.insertId;
       for (const item of order.items) {
+
+        const realItem = await this.query(connection, `SELECT * FROM menu WHERE id=?`, [item.id]);
+        if(item.price != realItem[0].price){
+          let err = new StatusCodeError(`price for response menu item ${item.menuId} does not match real price`, 400);
+          logger.errLogHelper(err);
+          throw err;
+        }
+
         const menuId = await this.getID(connection, 'id', item.menuId, 'menu');
         await this.query(connection, `INSERT INTO orderItem (orderId, menuId, description, price) VALUES (?, ?, ?, ?)`, [orderId, menuId, item.description, item.price]);
         
