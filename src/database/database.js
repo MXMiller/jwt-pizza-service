@@ -201,8 +201,8 @@ class DB {
     try {
       const orderResult = await this.query(connection, `INSERT INTO dinerOrder (dinerId, franchiseId, storeId, date) VALUES (?, ?, ?, now())`, [user.id, order.franchiseId, order.storeId]);
       const orderId = orderResult.insertId;
-      for (const item of order.items) {
 
+      for (const item of order.items) {
         //console.log(item)
         const realItem = await this.query(connection, `SELECT * FROM menu WHERE id=?`, [item.menuId]);
         if(item.price != realItem[0].price){
@@ -210,7 +210,9 @@ class DB {
           logger.errLogHelper(err);
           throw err;
         }
-
+      }
+      
+      for (const item of order.items) {
         const menuId = await this.getID(connection, 'id', item.menuId, 'menu');
         await this.query(connection, `INSERT INTO orderItem (orderId, menuId, description, price) VALUES (?, ?, ?, ?)`, [orderId, menuId, item.description, item.price]);
         
