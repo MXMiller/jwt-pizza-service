@@ -15,6 +15,14 @@ function randomName() {
   return Math.random().toString(36).substring(2, 12);
 }
 
+async function createTestFranchise() {
+  const adminUser = await createAdminUser();
+    const franchiseName = `Store Test Franchise ${Math.random()}`;
+    const franchise = await DB.createFranchise({ name: franchiseName, admins: [{ email: adminUser.email }], });
+    const store = await DB.createStore(franchise.id, { name: 'Test Store' });
+    return { franchise, store };
+}
+
 describe('database.js tests', () => { 
   test('getMenu returns all menu items', async () => {
     const menu = await DB.getMenu();
@@ -131,9 +139,11 @@ describe('database.js tests', () => {
     });
     const user = registerRes.body.user;
 
+    const { franchise, store } = await createTestFranchise();
+
     const orderReq = {
-      franchiseId: 1,
-      storeId: 1,
+      franchiseId: franchise.id,
+      storeId: store.id,
       items: [
         { menuId: 1, description: `Test Item`, price: 5.99 },
         { menuId: 1, description: `Test Item`, price: 5.99 },
@@ -149,6 +159,8 @@ describe('database.js tests', () => {
     // Verify order was saved
     const ordersData = await DB.getOrders(user);
     expect(ordersData.orders.length).toBeGreaterThan(0);
+
+    await DB.deleteFranchise(franchise.id);
   });
 
   test('addDinerOrder with empty items array', async () => {
@@ -160,15 +172,19 @@ describe('database.js tests', () => {
     });
     const user = registerRes.body.user;
 
+    const { franchise, store } = await createTestFranchise();
+
     const orderReq = {
-      franchiseId: 1,
-      storeId: 1,
+      franchiseId: franchise.id,
+      storeId: store.id,
       items: [],
     };
 
     const order = await DB.addDinerOrder(user, orderReq);
     expect(order).toHaveProperty('id');
     expect(order.items.length).toBe(0);
+
+    await DB.deleteFranchise(franchise.id);
   });
 
   test('getOrders with pagination', async () => {
@@ -180,11 +196,13 @@ describe('database.js tests', () => {
     });
     const user = registerRes.body.user;
 
+    const { franchise, store } = await createTestFranchise();
+
     // Create multiple orders
     for (let i = 0; i < 3; i++) {
       await DB.addDinerOrder(user, {
-        franchiseId: 1,
-        storeId: 1,
+        franchiseId: franchise.id,
+        storeId: store.id,
         items: [{ menuId: 1, description: `Test Item`, price: 5.99 }],
       });
     }
@@ -196,6 +214,8 @@ describe('database.js tests', () => {
     // Get page 2 (if exists)
     const ordersPage2 = await DB.getOrders(user, 2);
     expect(ordersPage2.page).toBe(2);
+
+    await DB.deleteFranchise(franchise.id);
   });
 
   test('createFranchise with valid admin email', async () => {
