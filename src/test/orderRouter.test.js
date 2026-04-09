@@ -103,7 +103,7 @@ describe('orderRouter.js tests', () => {
     });
     const token = registerRes.body.token;
 
-    const orderReq = { franchiseId: 1, storeId: 1, items: [{ menuId: 1, description: 'Veggie', price: 0.05 }] };
+    const orderReq = { franchiseId: 1, storeId: 1, items: [{ menuId: 1, description: 'Veggie', price: 0.0038 }] };
 
     const res = await request(app).post('/api/order').set('Authorization', `Bearer ${token}`).send(orderReq);
     expect(res.status).toBe(200);
