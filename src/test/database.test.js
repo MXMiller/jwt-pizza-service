@@ -26,9 +26,11 @@ describe('database.js tests', () => {
     }
   });
 
+  const randomNumber = Math.random();
+
   test('addMenuItem adds item to menu and returns with id', async () => {
     const newItem = {
-      title: `Test Item`,
+      title: `Test Item ${randomNumber}`,
       description: 'Test description',
       image: 'test.png',
       price: 5.99,
@@ -42,8 +44,6 @@ describe('database.js tests', () => {
     const menu = await DB.getMenu();
     expect(menu.some((m) => m.id === result.id)).toBe(true);
   });
-
-  const randomNumber = Math.random();
 
   test('addMenuItem with zero price', async () => {
     const newItem = {
