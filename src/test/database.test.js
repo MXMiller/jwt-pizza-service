@@ -43,9 +43,11 @@ describe('database.js tests', () => {
     expect(menu.some((m) => m.id === result.id)).toBe(true);
   });
 
+  const randomNumber = Math.random();
+
   test('addMenuItem with zero price', async () => {
     const newItem = {
-      title: `Zero Price Item`,
+      title: `Zero Price Item ${randomNumber}`,
       description: 'Free item',
       image: 'free.png',
       price: 0,
@@ -56,7 +58,7 @@ describe('database.js tests', () => {
 
   test('addMenuItem with large price', async () => {
     const newItem = {
-      title: `Expensive Item`,
+      title: `Expensive Item ${randomNumber}`,
       description: 'Very expensive',
       image: 'expensive.png',
       price: 99.99,
@@ -133,8 +135,8 @@ describe('database.js tests', () => {
       franchiseId: 1,
       storeId: 1,
       items: [
-        { menuId: 1023, description: 'Test Item', price: 5.99 },
-        { menuId: 1022, description: 'Another Item', price: 3.50 },
+        { menuId: 1023, description: `Test Item ${randomNumber}`, price: 5.99 },
+        { menuId: 1024, description: `Another Item ${randomNumber}`, price: 3.50 },
       ],
     };
 
