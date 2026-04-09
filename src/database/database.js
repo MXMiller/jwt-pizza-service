@@ -203,7 +203,6 @@ class DB {
       const orderId = orderResult.insertId;
 
       for (const item of order.items) {
-        //console.log(item)
         const realItem = await this.query(connection, `SELECT * FROM menu WHERE id=?`, [item.menuId]);
         if(item.description != realItem[0].title || item.price != realItem[0].price){
           console.log(`Price mismatch for menu item ${item.menuId}: order price ${item.price} does not match real price ${realItem[0].price}`);
