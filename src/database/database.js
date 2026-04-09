@@ -201,12 +201,14 @@ class DB {
     try {
       //check franchise/store ids
       const franchiseCheckResult = await this.query(connection, `SELECT * FROM franchise WHERE id=?`, [order.franchiseId]);
+      console.log("Franchise Check Result:", franchiseCheckResult, " for franchiseId ", order.franchiseId);
       if (franchiseCheckResult.length == 0) {
         let err = new StatusCodeError('that franchise doesn\'t exist', 400);
         logger.errLogHelper(err);
         throw err;
       }
       const storeCheckResult = await this.query(connection, `SELECT * FROM store WHERE id=? AND franchiseId=?`, [order.storeId, order.franchiseId]);
+      console.log("Store Check Result:", storeCheckResult, " for storeId ", order.storeId);
       if (storeCheckResult.length == 0) {
         let err = new StatusCodeError('that store doesn\'t exist for the given franchise', 400);
         logger.errLogHelper(err);
