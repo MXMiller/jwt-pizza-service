@@ -136,6 +136,7 @@ describe('database.js tests', () => {
       storeId: 1,
       items: [
         { menuId: 1, description: `Test Item ${randomNumber}`, price: 5.99 },
+        { menuId: 1, description: `Test Item ${randomNumber}`, price: 5.99 },
       ],
     };
 
