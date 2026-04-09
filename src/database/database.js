@@ -205,13 +205,14 @@ class DB {
       for (const item of order.items) {
         //console.log(item)
         const realItem = await this.query(connection, `SELECT * FROM menu WHERE id=?`, [item.menuId]);
-        if(item.price != realItem[0].price){
-          let err = new StatusCodeError(`server response menu item ${item.menuId} does not match real item`, 400);
+        if(item.description != realItem[0].title || item.price != realItem[0].price){
+          console.log(`Price mismatch for menu item ${item.menuId}: order price ${item.price} does not match real price ${realItem[0].price}`);
+          let err = new StatusCodeError(`server response menu item ${item.menuId} does not match actual menu item`, 400);
           logger.errLogHelper(err);
           throw err;
         }
       }
-      
+
       for (const item of order.items) {
         const menuId = await this.getID(connection, 'id', item.menuId, 'menu');
         await this.query(connection, `INSERT INTO orderItem (orderId, menuId, description, price) VALUES (?, ?, ?, ?)`, [orderId, menuId, item.description, item.price]);
