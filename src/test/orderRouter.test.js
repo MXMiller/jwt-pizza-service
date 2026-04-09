@@ -16,6 +16,7 @@ function randomName() {
 }
 
 describe('orderRouter.js tests', () => {
+
   test('GET /api/order/menu returns menu items', async () => {
     const res = await request(app).get('/api/order/menu');
     expect(res.status).toBe(200);
@@ -103,7 +104,7 @@ describe('orderRouter.js tests', () => {
     });
     const token = registerRes.body.token;
 
-    const orderReq = { franchiseId: 1, storeId: 1, items: [{ menuId: 1, description: 'Veggie', price: 0.0038 }] }; 
+    const orderReq = { franchiseId: 1, storeId: 1, items: [{ menuId: 1, description: `Test Item`, price: 5.99 }] }; 
 
     const res = await request(app).post('/api/order').set('Authorization', `Bearer ${token}`).send(orderReq);
     expect(res.status).toBe(200);
