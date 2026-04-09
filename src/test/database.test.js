@@ -26,11 +26,11 @@ describe('database.js tests', () => {
     }
   });
 
-  const randomNumber = Math.random();
+  //const randomNumber = Math.random();
 
   test('addMenuItem adds item to menu and returns with id', async () => {
     const newItem = {
-      title: `Test Item ${randomNumber}`,
+      title: `Test Item`,
       description: 'Test description',
       image: 'test.png',
       price: 5.99,
@@ -47,7 +47,7 @@ describe('database.js tests', () => {
 
   test('addMenuItem with zero price', async () => {
     const newItem = {
-      title: `Zero Price Item ${randomNumber}`,
+      title: `Zero Price Item`,
       description: 'Free item',
       image: 'free.png',
       price: 0,
@@ -58,7 +58,7 @@ describe('database.js tests', () => {
 
   test('addMenuItem with large price', async () => {
     const newItem = {
-      title: `Expensive Item ${randomNumber}`,
+      title: `Expensive Item`,
       description: 'Very expensive',
       image: 'expensive.png',
       price: 99.99,
@@ -135,8 +135,8 @@ describe('database.js tests', () => {
       franchiseId: 1,
       storeId: 1,
       items: [
-        { menuId: 1, description: `Test Item ${randomNumber}`, price: 5.99 },
-        { menuId: 1, description: `Test Item ${randomNumber}`, price: 5.99 },
+        { menuId: 1, description: `Test Item`, price: 5.99 },
+        { menuId: 1, description: `Test Item`, price: 5.99 },
       ],
     };
 
@@ -185,7 +185,7 @@ describe('database.js tests', () => {
       await DB.addDinerOrder(user, {
         franchiseId: 1,
         storeId: 1,
-        items: [{ menuId: 1, description: `Test Item ${randomNumber}`, price: 5.99 }],
+        items: [{ menuId: 1, description: `Test Item`, price: 5.99 }],
       });
     }
 
