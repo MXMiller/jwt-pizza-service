@@ -28,10 +28,10 @@ describe('database.js tests', () => {
 
   test('addMenuItem adds item to menu and returns with id', async () => {
     const newItem = {
-      title: `Test Item ${Math.random()}`,
+      title: `Test Item`,
       description: 'Test description',
       image: 'test.png',
-      price: 9.99,
+      price: 5.99,
     };
     const result = await DB.addMenuItem(newItem);
     expect(result).toHaveProperty('id');
@@ -45,7 +45,7 @@ describe('database.js tests', () => {
 
   test('addMenuItem with zero price', async () => {
     const newItem = {
-      title: `Zero Price Item ${Math.random()}`,
+      title: `Zero Price Item`,
       description: 'Free item',
       image: 'free.png',
       price: 0,
@@ -56,7 +56,7 @@ describe('database.js tests', () => {
 
   test('addMenuItem with large price', async () => {
     const newItem = {
-      title: `Expensive Item ${Math.random()}`,
+      title: `Expensive Item`,
       description: 'Very expensive',
       image: 'expensive.png',
       price: 99.99,
@@ -133,8 +133,8 @@ describe('database.js tests', () => {
       franchiseId: 1,
       storeId: 1,
       items: [
-        { menuId: 1, description: 'Test Item', price: 5.99 },
-        { menuId: 1, description: 'Another Item', price: 3.50 },
+        { menuId: 1023, description: 'Test Item', price: 5.99 },
+        { menuId: 1022, description: 'Another Item', price: 3.50 },
       ],
     };
 
@@ -183,7 +183,7 @@ describe('database.js tests', () => {
       await DB.addDinerOrder(user, {
         franchiseId: 1,
         storeId: 1,
-        items: [{ menuId: 1, description: 'Item', price: 5.99 }],
+        items: [{ menuId: 1023, description: 'Item', price: 5.99 }],
       });
     }
 
