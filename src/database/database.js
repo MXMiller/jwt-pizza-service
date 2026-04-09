@@ -21,6 +21,7 @@ class DB {
     const connection = await this.getConnection();
     try {
       const rows = await this.query(connection, `SELECT * FROM menu`);
+      //console.log(rows[0])
       return rows;
     } finally {
       connection.end();
@@ -202,9 +203,10 @@ class DB {
       const orderId = orderResult.insertId;
       for (const item of order.items) {
 
-        const realItem = await this.query(connection, `SELECT * FROM menu WHERE id=?`, [item.id]);
+        //console.log(item)
+        const realItem = await this.query(connection, `SELECT * FROM menu WHERE id=?`, [item.menuId]);
         if(item.price != realItem[0].price){
-          let err = new StatusCodeError(`price for response menu item ${item.menuId} does not match real price`, 400);
+          let err = new StatusCodeError(`server response menu item ${item.menuId} does not match real item`, 400);
           logger.errLogHelper(err);
           throw err;
         }
