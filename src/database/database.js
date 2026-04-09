@@ -201,14 +201,14 @@ class DB {
     try {
       //check franchise/store ids
       const franchiseCheckResult = await this.query(connection, `SELECT * FROM franchise WHERE id=?`, [order.franchiseId]);
-      console.log("Franchise Check Result:", franchiseCheckResult, " for franchiseId ", order.franchiseId);
+      //console.log("Franchise Check Result:", franchiseCheckResult, " for franchiseId ", order.franchiseId);
       if (franchiseCheckResult.length === 0) {
         let err = new StatusCodeError('that franchise doesn\'t exist', 400);
         logger.errLogHelper(err);
         throw err;
       }
       const storeCheckResult = await this.query(connection, `SELECT * FROM store WHERE id=? AND franchiseId=?`, [order.storeId, order.franchiseId]);
-      console.log("Store Check Result:", storeCheckResult, " for storeId ", order.storeId);
+      //console.log("Store Check Result:", storeCheckResult, " for storeId ", order.storeId);
       if (storeCheckResult.length === 0) {
         let err = new StatusCodeError('that store doesn\'t exist for the given franchise', 400);
         logger.errLogHelper(err);
@@ -221,12 +221,13 @@ class DB {
       //check items
       for (const item of order.items) {
         const realItem = await this.query(connection, `SELECT * FROM menu WHERE id=?`, [item.menuId]);
+        console.log("checking item", realItem, " for menuId ", item.menuId);
         if (realItem.length === 0) {
           let err = new StatusCodeError('that item doesn\'t exist', 400);
           logger.errLogHelper(err);
           throw err;
         }
-        console.log("checking item", item, "against real item", realItem[0]);
+        //console.log("checking item", item, "against real item", realItem[0]);
         if(item.description != realItem[0].title || item.price != realItem[0].price){
           let err = new StatusCodeError(`Request order item ${item.menuId} does not match response menu item.`, 400);
           logger.errLogHelper(err);
@@ -367,6 +368,13 @@ class DB {
   async createStore(franchiseId, store) {
     const connection = await this.getConnection();
     try {
+      const franchiseCheckResult = await this.query(connection, `SELECT * FROM franchise WHERE id=?`, [franchiseId]);
+      if (franchiseCheckResult.length === 0) {
+        let err = new StatusCodeError('that franchise doesn\'t exist', 400);
+        logger.errLogHelper(err);
+        throw err;
+      }
+      
       const insertResult = await this.query(connection, `INSERT INTO store (franchiseId, name) VALUES (?, ?)`, [franchiseId, store.name]);
       return { id: insertResult.insertId, franchiseId, name: store.name };
     } finally {
