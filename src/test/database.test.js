@@ -135,8 +135,8 @@ describe('database.js tests', () => {
       franchiseId: 1,
       storeId: 1,
       items: [
-        { menuId: 1023, description: `Test Item ${randomNumber}`, price: 5.99 },
-        { menuId: 1024, description: `Another Item ${randomNumber}`, price: 3.50 },
+        { menuId: 1, description: `Veggie`, price: 0.0038 },
+        { menuId: 2, description: `Pepperoni`, price: 0.0042 },
       ],
     };
 
@@ -185,7 +185,7 @@ describe('database.js tests', () => {
       await DB.addDinerOrder(user, {
         franchiseId: 1,
         storeId: 1,
-        items: [{ menuId: 1023, description: 'Item', price: 5.99 }],
+        items: [{ menuId: 1, description: `Veggie`, price: 0.0038 }],
       });
     }
 
