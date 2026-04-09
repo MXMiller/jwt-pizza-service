@@ -221,6 +221,11 @@ class DB {
       //check items
       for (const item of order.items) {
         const realItem = await this.query(connection, `SELECT * FROM menu WHERE id=?`, [item.menuId]);
+        if (realItem.length === 0) {
+          let err = new StatusCodeError('that item doesn\'t exist', 400);
+          logger.errLogHelper(err);
+          throw err;
+        }
         console.log("checking item", item, "against real item", realItem[0]);
         if(item.description != realItem[0].title || item.price != realItem[0].price){
           let err = new StatusCodeError(`Request order item ${item.menuId} does not match response menu item.`, 400);
