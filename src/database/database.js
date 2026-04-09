@@ -221,7 +221,6 @@ class DB {
       //check items
       for (const item of order.items) {
         const realItem = await this.query(connection, `SELECT * FROM menu WHERE id=?`, [item.menuId]);
-        console.log("checking item", realItem, " for menuId ", item.menuId);
         if (realItem.length === 0) {
           let err = new StatusCodeError('that item doesn\'t exist', 400);
           logger.errLogHelper(err);
