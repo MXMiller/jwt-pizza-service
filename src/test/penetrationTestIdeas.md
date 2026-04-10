@@ -24,4 +24,4 @@ Fix: check franchise is in database before deleting, return error of not.
 
 7. Calling GET /api/franchise/ as a diner with no franchiseId
 Result: the diner gets franchise with id 1 in the http response. 
-Fix: check userId is valid before getting frachise from database. 
+Fix: check userId is valid before calling database function. I can't get this to work right, but it gives you just as much info as getting a location to order a pizza, so it's probably fine. 
