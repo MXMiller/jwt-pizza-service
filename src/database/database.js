@@ -69,9 +69,16 @@ class DB {
     try {
       const userResult = await this.query(connection, `SELECT * FROM user WHERE email=?`, [email]);
       const user = userResult[0];
-      if (!user || (password && !(await bcrypt.compare(password, user.password))) || password === '') {
+      if (!user || (password && !(await bcrypt.compare(password, user.password)))) {
         metrics.authFailed();
         const err = new StatusCodeError('unknown user', 404);
+        logger.errLogHelper(err);
+        throw err;
+      }
+
+      if(password === ''){
+        metrics.authFailed();
+        const err = new StatusCodeError('invalid password', 404);
         logger.errLogHelper(err);
         throw err;
       }
@@ -343,7 +350,7 @@ class DB {
     const connection = await this.getConnection();
     try {
       //console.log("Getting franchises for userId", userId, "userId type:", typeof userId);
-      if(userId === undefined || userId === null || isNaN(userId)){
+      if(userId === undefined){
         let err = new StatusCodeError('userId is required', 400);
         logger.errLogHelper(err);
         throw err;
