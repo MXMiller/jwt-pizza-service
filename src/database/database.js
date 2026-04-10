@@ -367,9 +367,9 @@ class DB {
   async createStore(franchiseId, store) {
     const connection = await this.getConnection();
     try {
-      const franchiseCheckResult = await this.query(connection, `SELECT * FROM franchise WHERE id=?`, [franchiseId]);
-      if (franchiseCheckResult.length === 0) {
-        let err = new StatusCodeError('that franchise doesn\'t exist', 400);
+      const storeCheckResult = await this.query(connection, `SELECT * FROM store WHERE id=? AND franchiseId=?`, [storeId, franchiseId]);
+      if (storeCheckResult.length === 0) {
+        let err = new StatusCodeError('that store doesn\'t exist', 400);
         logger.errLogHelper(err);
         throw err;
       }
@@ -384,8 +384,8 @@ class DB {
   async deleteStore(franchiseId, storeId) {
     const connection = await this.getConnection();
     try {
-      const franchiseCheckResult = await this.query(connection, `SELECT * FROM store WHERE id=? AND franchiseId=?`, [storeId, franchiseId]);
-      if (franchiseCheckResult.length === 0) {
+      const storeCheckResult = await this.query(connection, `SELECT * FROM store WHERE id=? AND franchiseId=?`, [storeId, franchiseId]);
+      if (storeCheckResult.length === 0) {
         let err = new StatusCodeError('that store doesn\'t exist', 400);
         logger.errLogHelper(err);
         throw err;
