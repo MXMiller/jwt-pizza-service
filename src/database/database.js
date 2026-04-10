@@ -342,6 +342,13 @@ class DB {
   async getUserFranchises(userId) {
     const connection = await this.getConnection();
     try {
+      console.log("Getting franchises for userId", userId, "userId type:", typeof userId);
+      if(userId === undefined || userId === ''){
+        let err = new StatusCodeError('userId is required', 400);
+        logger.errLogHelper(err);
+        throw err;
+      }
+
       let franchiseIds = await this.query(connection, `SELECT objectId FROM userRole WHERE role='franchisee' AND userId=?`, [userId]);
       if (franchiseIds.length === 0) {
         return [];
