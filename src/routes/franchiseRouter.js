@@ -86,7 +86,7 @@ franchiseRouter.get(
     
     let result = [];
     const userId = Number(req.params.userId);
-    if (!userId || isNaN(userId)) {
+    if (!userId || isNaN(Number(userId))) {
       throw new StatusCodeError(400, 'Invalid or missing userId');
     }
     if (req.user.id === userId || req.user.isRole(Role.Admin)) {
