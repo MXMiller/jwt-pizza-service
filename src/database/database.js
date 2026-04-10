@@ -343,7 +343,7 @@ class DB {
     const connection = await this.getConnection();
     try {
       //console.log("Getting franchises for userId", userId, "userId type:", typeof userId);
-      if(userId === undefined || userId === null || isNaN(Number(userId))){
+      if(userId === undefined || userId === null || isNaN(userId)){
         let err = new StatusCodeError('userId is required', 400);
         logger.errLogHelper(err);
         throw err;
