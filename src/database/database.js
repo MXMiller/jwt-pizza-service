@@ -289,6 +289,13 @@ class DB {
     try {
       await connection.beginTransaction();
       try {
+        const franchiseCheckResult = await this.query(connection, `SELECT * FROM franchise WHERE id=?`, [franchiseId]);
+        if (franchiseCheckResult.length === 0) {
+          let err = new StatusCodeError('that franchise doesn\'t exist', 400);
+          logger.errLogHelper(err);
+          throw err;
+        }
+
         await this.query(connection, `DELETE FROM store WHERE franchiseId=?`, [franchiseId]);
         await this.query(connection, `DELETE FROM userRole WHERE objectId=?`, [franchiseId]);
         await this.query(connection, `DELETE FROM franchise WHERE id=?`, [franchiseId]);
