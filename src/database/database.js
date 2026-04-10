@@ -367,7 +367,7 @@ class DB {
   async createStore(franchiseId, store) {
     const connection = await this.getConnection();
     try {
-      const storeCheckResult = await this.query(connection, `SELECT * FROM store WHERE id=? AND franchiseId=?`, [storeId, franchiseId]);
+      const storeCheckResult = await this.query(connection, `SELECT * FROM store WHERE id=? AND franchiseId=?`, [store.id, franchiseId]);
       if (storeCheckResult.length === 0) {
         let err = new StatusCodeError('that store doesn\'t exist', 400);
         logger.errLogHelper(err);
