@@ -384,6 +384,13 @@ class DB {
   async deleteStore(franchiseId, storeId) {
     const connection = await this.getConnection();
     try {
+      const franchiseCheckResult = await this.query(connection, `SELECT * FROM store WHERE id=? AND franchiseId=?`, [storeId, franchiseId]);
+      if (franchiseCheckResult.length === 0) {
+        let err = new StatusCodeError('that store doesn\'t exist', 400);
+        logger.errLogHelper(err);
+        throw err;
+      }
+
       await this.query(connection, `DELETE FROM store WHERE franchiseId=? AND id=?`, [franchiseId, storeId]);
     } finally {
       connection.end();
