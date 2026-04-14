@@ -81,7 +81,6 @@ franchiseRouter.get(
 // getUserFranchises
 franchiseRouter.get(
   '/:userId',
-  authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
     let startTime = Date.now();
     
@@ -127,7 +126,6 @@ franchiseRouter.post(
 // deleteFranchise
 franchiseRouter.delete(
   '/:franchiseId',
-  authRouter.authenticateToken,
   asyncHandler(async (req, res) => {
     let startTime = Date.now();
     
