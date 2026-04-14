@@ -148,7 +148,6 @@ class DB {
       if (updates.length > 0) {
         const query = `UPDATE user SET ${updates.join(', ')} WHERE id = ?`;
         values.push(userId);
-
         await this.query(connection, query, values);
       }
       return this.getUser(email, password);
